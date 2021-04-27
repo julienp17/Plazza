@@ -27,4 +27,15 @@ bool isPositiveNumber(const std::string &str) {
     return iss.eof() && !iss.fail();
 }
 
+template <typename T>
+T getNumber(const std::string &str) {
+    std::istringstream iss(str);
+    T nb;
+
+    if (str[0] == '-')
+        return false;
+    iss >> nb;
+    return nb;
+}
+
 #endif  // INC_UTILS_HPP_

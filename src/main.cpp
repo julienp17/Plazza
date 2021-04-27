@@ -21,7 +21,7 @@ int main(int ac, char **av) {
         std::cerr << USAGE << std::endl;
         return MY_EXIT_FAILURE;
     }
-    reception.placeOrders();
+    reception.run();
     return 0;
 }
 

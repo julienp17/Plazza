@@ -14,7 +14,8 @@ SRC			=	$(addprefix $(SRC_D), $(SRC_F))
 OBJ			=	$(SRC:.cpp=.o)
 SRC_D		=	src/
 SRC_F		=	utils.cpp \
-				Reception.cpp
+				Reception.cpp \
+				Pizza.cpp
 
 SRC_UT		=	$(addprefix $(SRC_UT_D), $(SRC_UT_F))
 OBJ_UT		=	$(SRC_UT:.cpp=.o)
