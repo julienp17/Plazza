@@ -10,6 +10,11 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
+
+typedef std::vector<std::string> VecStr_t;
+
+VecStr_t split(const std::string &str, char delim);
 
 template <typename T>
 bool isPositiveNumber(const std::string &str) {
