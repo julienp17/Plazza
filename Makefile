@@ -47,7 +47,7 @@ coverage:
 	gcovr -s --exclude tests/
 
 clean:
-	rm -f $(OBJ) $(OBJ_UT) *.o *.gc*
+	rm -f $(OBJ) $(OBJ_M) $(OBJ_UT) *.o *.gc*
 
 fclean: clean
 	rm -f $(NAME) $(NAME_UT)

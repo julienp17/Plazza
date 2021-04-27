@@ -8,6 +8,8 @@
 #ifndef INC_PLAZZA_HPP_
 #define INC_PLAZZA_HPP_
 
+#include "utils.hpp"
+
 #define MY_EXIT_FAILURE 84
 #define USAGE \
 "Usage: plazza COOKING_TIME NB_COOKS STOCK_TIME\n" \
@@ -17,6 +19,5 @@
 "per kitchen.\n" \
 "      STOCK_TIME: Positive integer representing the time in milliseconds " \
 "used by the kitchen stock to replace ingredients."
-
 
 #endif  // INC_PLAZZA_HPP_
