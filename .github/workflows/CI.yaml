@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  BIN_NAME: plazza
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - run: make
+    - run: make clean
+    - run: make fclean
+    - run: make re
+
+  unit-test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Run unit tests
+      run: make tests_run
+
+    - name: Run coverage
+      if: ${{ always() }}
+      run: make coverage > coverage.txt
+
+  lint:
+    name: Coding Style
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install cpplint
+      run: pip install cpplint
+
+    - name: Run cpplint
+      run: cpplint --recursive --quiet --filter=-legal/copyright,-build/c++11 --verbose=3 .
+
+  # memory:
+  #   name: Memory
+  #   runs-on: ubuntu-latest
+  #   container: epitechcontent/epitest-docker
+
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v2
+
+  #   - name: Build binary
+  #     run: make
+
+  #   - name: Run valgrind
+  #     run: valgrind --leak-check=full --error-exitcode=42 ./$BIN_NAME
