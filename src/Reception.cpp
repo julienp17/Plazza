@@ -8,19 +8,23 @@
 #include <iostream>
 #include "Reception.hpp"
 
-void plz::Reception::placeOrder() {
-    VecStr_t commands;
-    VecStr_t pizza_tokens;
+void plz::Reception::placeOrders(void) {
+    VecStr_t orders;
     std::string cmdLine;
 
     while (std::cin) {
         getline(std::cin, cmdLine);
-        commands = split(cmdLine, ';');
-        for (auto command : commands) {
-            std::cout << "---" << std::endl;
-            pizza_tokens = split(command, ' ');
-            for (auto token : pizza_tokens)
-                std::cout << token << std::endl;
-        }
+        orders = split(cmdLine, ';');
+        for (const std::string &order : orders)
+            this->placeOrder(order);
     }
+}
+
+void plz::Reception::placeOrder(const std::string &order) {
+    VecStr_t pizza_tokens;
+
+    std::cout << "---" << std::endl;
+    pizza_tokens = split(order, ' ');
+    for (auto token : pizza_tokens)
+        std::cout << token << std::endl;
 }

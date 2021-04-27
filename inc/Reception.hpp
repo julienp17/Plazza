@@ -8,6 +8,7 @@
 #ifndef INC_RECEPTION_HPP_
 #define INC_RECEPTION_HPP_
 
+#include <string>
 #include "plazza.hpp"
 
 namespace plz {
@@ -16,7 +17,8 @@ class Reception {
     Reception(void) {}
     virtual ~Reception(void) {}
 
-    void placeOrder(void);
+    void placeOrders(void);
+    void placeOrder(const std::string &order);
 };
 }  // namespace plz
 
