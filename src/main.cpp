@@ -7,10 +7,13 @@
 
 #include <iostream>
 #include "plazza.hpp"
+#include "Reception.hpp"
 
 static bool args_are_correct(int ac, char **av);
 
 int main(int ac, char **av) {
+    plz::Reception reception;
+
     if (ac == 2 && std::string(av[1]) == "-h") {
         std::cout << USAGE << std::endl;
         return 0;
@@ -18,6 +21,7 @@ int main(int ac, char **av) {
         std::cerr << USAGE << std::endl;
         return MY_EXIT_FAILURE;
     }
+    reception.placeOrders();
     return 0;
 }
 
