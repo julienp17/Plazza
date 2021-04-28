@@ -32,8 +32,6 @@ T getNumber(const std::string &str) {
     std::istringstream iss(str);
     T nb;
 
-    if (str[0] == '-')
-        return false;
     iss >> nb;
     return nb;
 }

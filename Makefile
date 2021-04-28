@@ -24,13 +24,17 @@ SRC_UT_F	=	testReception.cpp
 
 INC			=	-I./inc
 
+CXXFLAGS	=	$(STD) $(INC) $(WFLAGS) $(COVFLAGS)
+
 STD			=	-std=c++17
 
-CXXFLAGS	=	$(STD) -W -Wall -Wextra -Werror $(INC)
-
-LDFLAGS_UT  =	-lgtest -lgtest_main -lpthread
+WFLAGS		=	-W -Wall -Wextra -Werror
 
 DBFLAGS		=	-g -g3 -ggdb
+
+COVFLAGS 	=   --coverage -g -O0
+
+LDFLAGS_UT  =	-lgtest -lgtest_main -lpthread
 
 NAME		=	plazza
 
@@ -46,7 +50,7 @@ tests_run: clean $(OBJ) $(OBJ_UT)
 	./$(NAME_UT)
 
 coverage:
-	gcovr -s --exclude tests/
+	gcovr -ps --exclude $(MAIN) --exclude tests/
 
 clean:
 	rm -f $(OBJ) $(OBJ_M) $(OBJ_UT) *.o *.gc*

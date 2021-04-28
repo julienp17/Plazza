@@ -34,3 +34,4 @@ unit_tests
 
 # Tools
 vgcore*
+*.gc*
