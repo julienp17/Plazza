@@ -10,10 +10,10 @@
 #include "Reception.hpp"
 
 static bool args_are_correct(int ac, char **av);
-static void runReception(const plz::ReceptionPtr reception);
+static void runReception(const plz::ReceptionPtr_t reception);
 
 int main(int ac, char **av) {
-    plz::ReceptionPtr reception = nullptr;
+    plz::ReceptionPtr_t reception = nullptr;
     float cookingMultiplier = 0.0f;
     size_t nbCooks = 0;
     plz::milliseconds_t stockTime;
@@ -25,8 +25,8 @@ int main(int ac, char **av) {
     cookingMultiplier = getNumber<float>(av[1]);
     nbCooks = getNumber<size_t>(av[2]);
     stockTime = (plz::milliseconds_t)getNumber<size_t>(av[3]);
-    reception = plz::ReceptionPtr(new plz::Reception(cookingMultiplier, nbCooks,
-                                                    stockTime));
+    reception = plz::ReceptionPtr_t(new plz::Reception(cookingMultiplier,
+                                                    nbCooks, stockTime));
     runReception(reception);
     return 0;
 }
@@ -39,7 +39,7 @@ static bool args_are_correct(int ac, char **av) {
         && isPositiveNumber<int>(av[3]));
 }
 
-static void runReception(const plz::ReceptionPtr reception) {
+static void runReception(const plz::ReceptionPtr_t reception) {
     std::string orders;
 
     while (std::cin) {

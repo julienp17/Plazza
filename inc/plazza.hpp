@@ -8,7 +8,7 @@
 #ifndef INC_PLAZZA_HPP_
 #define INC_PLAZZA_HPP_
 
-#include <vector>
+#include <queue>
 #include <chrono>
 #include "utils.hpp"
 
