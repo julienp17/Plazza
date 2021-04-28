@@ -42,7 +42,7 @@ class Reception {
      *
      * @return The pizza queue
      */
-    inline const std::queue<Pizza> &getPizzaQueue(void) const {
+    inline const std::queue<PizzaPtr> &getPizzaQueue(void) const {
        return _pizzas;
     }
 
@@ -55,7 +55,20 @@ class Reception {
      */
     bool orderIsCorrect(const VecStr_t &tokens);
 
-    std::queue<Pizza> _pizzas;
+    /**
+     * @brief Multiplier for the cooking time of the pizzas
+     */
+    float _cookingMultiplier;
+
+    /**
+     * @brief Number of cooks per kitchen
+     */
+    size_t _nbCooks;
+
+    /**
+     * @brief The queue of pizzas to be made
+     */
+    std::queue<PizzaPtr> _pizzas;
 };
 }  // namespace plz
 
