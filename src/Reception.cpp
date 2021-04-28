@@ -33,7 +33,9 @@ bool Reception::placeOrder(const std::string &order) {
     size = getPizzaSize(tokens[1]);
     nbPizzas = getNumber<size_t>(tokens[2].substr(1));
     for (size_t i = 0 ; i < nbPizzas ; i++)
-        _pizzas.push(Pizza(type, size));
+        _pizzas.push(PizzaPtr(new Pizza(type, size)));
+    std::cout << "Order placed for " << nbPizzas << " "
+        << tokens[0] << " " << tokens[1] << "." << std::endl;
     return true;
 }
 

@@ -9,7 +9,8 @@
 #define INC_PIZZA_HPP_
 
 #include <string>
-#include <chrono>
+#include <memory>
+#include "plazza.hpp"
 
 namespace plz {
 enum PizzaType {
@@ -43,8 +44,6 @@ enum PizzaSize {
  */
 PizzaSize getPizzaSize(const std::string &pType);
 
-typedef std::chrono::milliseconds milliseconds_t;
-
 milliseconds_t getPizzaBakeTime(const plz::PizzaType type);
 
 struct Pizza {
@@ -55,6 +54,8 @@ struct Pizza {
     PizzaSize size;
     milliseconds_t timeToBake;
 };
+
+typedef std::shared_ptr<struct Pizza> PizzaPtr;
 
 }  // namespace plz
 
