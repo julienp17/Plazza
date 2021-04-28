@@ -21,6 +21,8 @@
 "per kitchen.\n" \
 "      STOCK_TIME: Positive integer representing the time in milliseconds " \
 "used by the kitchen stock to replace ingredients."
+#define exitUsage(stream, exitCode) \
+    do { stream << USAGE << std::endl; return exitCode; } while (0)
 
 namespace plz {
 typedef std::chrono::milliseconds milliseconds_t;

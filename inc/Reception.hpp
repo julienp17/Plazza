@@ -9,6 +9,7 @@
 #define INC_RECEPTION_HPP_
 
 #include <string>
+#include <memory>
 #include <queue>
 #include "plazza.hpp"
 #include "Pizza.hpp"
@@ -16,7 +17,8 @@
 namespace plz {
 class Reception {
  public:
-    Reception(void) {}
+    Reception(const float cookingMultiplier, const size_t nbCooks,
+            const milliseconds_t stockTime);
     virtual ~Reception(void) {}
 
     /**
@@ -66,10 +68,17 @@ class Reception {
     size_t _nbCooks;
 
     /**
+     * @brief Time for a kitchen stock to replace ingredients
+     */
+    milliseconds_t _stockTime;
+
+    /**
      * @brief The queue of pizzas to be made
      */
     std::queue<PizzaPtr> _pizzas;
 };
+
+typedef std::shared_ptr<Reception> ReceptionPtr;
 }  // namespace plz
 
 #endif  // INC_RECEPTION_HPP_

@@ -11,6 +11,13 @@
 #include "utils.hpp"
 
 namespace plz {
+Reception::Reception(const float cookingMultiplier, const size_t nbCooks,
+                    const milliseconds_t stockTime) {
+    this->_cookingMultiplier = cookingMultiplier;
+    this->_nbCooks = nbCooks;
+    this->_stockTime = stockTime;
+}
+
 void Reception::placeOrders(const std::string &orders_str) {
     VecStr_t orders;
 
