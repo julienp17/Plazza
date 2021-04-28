@@ -9,7 +9,7 @@
 #define INC_RECEPTION_HPP_
 
 #include <string>
-#include <vector>
+#include <queue>
 #include "plazza.hpp"
 #include "Pizza.hpp"
 
@@ -20,21 +20,28 @@ class Reception {
     virtual ~Reception(void) {}
 
     /**
-     * @brief Run the pizzeria
-     */
-    void run(void);
-
-    /**
      * @brief Get a line from standard input and add pizzas to the queue
      */
     void placeOrders(void);
 
     /**
-     * @brief Add a pizza to the queue
+     * @brief Adds a pizza to the queue
      *
-     * @param order The string defining the order
+     * @param order The string defining the order, following the "TYPE SIZE
+     * NB_PIZZAS" format
+     * @return true if the pizza was correctly added to the queue
+     * @return false if the order was incorrect
      */
-    void placeOrder(const std::string &order);
+    bool placeOrder(const std::string &order);
+
+    /**
+     * @brief Get the pizza queue
+     *
+     * @return The pizza queue
+     */
+    inline const std::queue<Pizza> &getPizzaQueue(void) const {
+       return _pizzas;
+    }
 
  private:
     /**
@@ -45,7 +52,7 @@ class Reception {
      */
     bool orderIsCorrect(const VecStr_t &tokens);
 
-    std::vector<Pizza> _pizzas;
+    std::queue<Pizza> _pizzas;
 };
 }  // namespace plz
 

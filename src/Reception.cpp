@@ -11,11 +11,6 @@
 #include "utils.hpp"
 
 namespace plz {
-void Reception::run(void) {
-    while (std::cin)
-        this->placeOrders();
-}
-
 void Reception::placeOrders(void) {
     VecStr_t orders;
     std::string cmdLine;
@@ -26,7 +21,7 @@ void Reception::placeOrders(void) {
         this->placeOrder(order);
 }
 
-void Reception::placeOrder(const std::string &order) {
+bool Reception::placeOrder(const std::string &order) {
     PizzaType type;
     PizzaSize size;
     size_t nbPizzas = 0;
@@ -34,18 +29,21 @@ void Reception::placeOrder(const std::string &order) {
 
     if (!this->orderIsCorrect(tokens)) {
         std::cout << "Invalid order." << std::endl;
-        return;
+        return false;
     }
     type = getPizzaType(tokens[0]);
     size = getPizzaSize(tokens[1]);
-    nbPizzas = getNumber<size_t>(tokens[2]);
+    nbPizzas = getNumber<size_t>(tokens[2].substr(1));
     for (size_t i = 0 ; i < nbPizzas ; i++)
-        _pizzas.push_back(Pizza(type, size));
+        _pizzas.push(Pizza(type, size));
+    return true;
 }
 
 bool Reception::orderIsCorrect(const VecStr_t &tokens) {
+    const char *nbPizzas = NULL;
+
     if (tokens.size() != 3) {
-        std::cerr << "Pizza ordering must be: TYPE SIZE NUMBER" << std::endl;
+        std::cerr << "Pizza ordering must be: TYPE SIZE NUMBER." << std::endl;
         return false;
     }
     try {
@@ -55,8 +53,9 @@ bool Reception::orderIsCorrect(const VecStr_t &tokens) {
         std::cerr << err.what() << std::endl;
         return false;
     }
-    if (!isPositiveNumber<size_t>(tokens[2])) {
-        std::cerr << "Invalid order." << std::endl;
+    nbPizzas = tokens[2].c_str() + 1;
+    if (!isPositiveNumber<size_t>(nbPizzas) || !getNumber<size_t>(nbPizzas)) {
+        std::cerr << "The number of pizzas must be positive." << std::endl;
         return false;
     }
     return true;

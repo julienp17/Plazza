@@ -20,7 +20,7 @@ SRC_F		=	utils.cpp \
 SRC_UT		=	$(addprefix $(SRC_UT_D), $(SRC_UT_F))
 OBJ_UT		=	$(SRC_UT:.cpp=.o)
 SRC_UT_D	=	tests/
-SRC_UT_F	=
+SRC_UT_F	=	testReception.cpp
 
 INC			=	-I./inc
 
