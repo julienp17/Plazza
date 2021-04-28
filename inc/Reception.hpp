@@ -20,9 +20,12 @@ class Reception {
     virtual ~Reception(void) {}
 
     /**
-     * @brief Get a line from standard input and add pizzas to the queue
+     * @brief Add pizzas to the queue
+     *
+     * @param orders The string defining the orders, separated by the ';'
+     * delimiter
      */
-    void placeOrders(void);
+    void placeOrders(const std::string &orders);
 
     /**
      * @brief Adds a pizza to the queue

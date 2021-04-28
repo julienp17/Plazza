@@ -11,33 +11,40 @@
 #include "Reception.hpp"
 #include "Error.hpp"
 
+static void testPizzaQueue(std::queue<plz::Pizza> &pizzaQueue, size_t nbPizzas,
+                    plz::PizzaType type, plz::PizzaSize size) {
+    plz::Pizza *pizza = nullptr;
+
+    for (size_t i = 0 ; i < nbPizzas ; i++) {
+        pizza = &pizzaQueue.front();
+        ASSERT_EQ(pizza->type, type);
+        ASSERT_EQ(pizza->size, size);
+        pizzaQueue.pop();
+    }
+}
+
+TEST(Reception, placeCorrectOrders) {
+    plz::Reception reception;
+    std::string orders = "regina XXL x2; fantasia M x3; margarita S x1";
+    std::queue<plz::Pizza> pizzaQueue;
+
+    reception.placeOrders(orders);
+    pizzaQueue = reception.getPizzaQueue();
+    ASSERT_EQ(pizzaQueue.size(), 6);
+    testPizzaQueue(pizzaQueue, 2, plz::PizzaType::Regina, plz::PizzaSize::XXL);
+    testPizzaQueue(pizzaQueue, 3, plz::PizzaType::Fantasia, plz::PizzaSize::M);
+    testPizzaQueue(pizzaQueue, 1, plz::PizzaType::Margarita, plz::PizzaSize::S);
+}
+
 TEST(Reception, placeCorrectOrder) {
     plz::Reception reception;
-    std::string order = "Regina S x3";
+    std::string order = "Americana XL x3";
     std::queue<plz::Pizza> pizzaQueue;
 
     ASSERT_TRUE(reception.placeOrder(order));
     pizzaQueue = reception.getPizzaQueue();
     ASSERT_EQ(pizzaQueue.size(), 3);
-    while (!pizzaQueue.empty()) {
-        plz::Pizza pizza = pizzaQueue.front();
-        ASSERT_EQ(pizza.type, plz::PizzaType::Regina);
-        ASSERT_EQ(pizza.size, plz::PizzaSize::S);
-        pizzaQueue.pop();
-    }
-}
-
-TEST(Reception, placeCorrectOrder2) {
-    plz::Reception reception;
-    std::string order = "Fantasia XXL x1";
-    std::queue<plz::Pizza> pizzaQueue;
-
-    ASSERT_TRUE(reception.placeOrder(order));
-    pizzaQueue = reception.getPizzaQueue();
-    ASSERT_EQ(pizzaQueue.size(), 1);
-    plz::Pizza pizza = pizzaQueue.front();
-    ASSERT_EQ(pizza.type, plz::PizzaType::Fantasia);
-    ASSERT_EQ(pizza.size, plz::PizzaSize::XXL);
+    testPizzaQueue(pizzaQueue, 3, plz::PizzaType::Americana, plz::PizzaSize::XL);
 }
 
 class PlaceIncorrectOrders

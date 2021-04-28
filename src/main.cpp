@@ -13,6 +13,7 @@ static bool args_are_correct(int ac, char **av);
 
 int main(int ac, char **av) {
     plz::Reception reception;
+    std::string orders;
 
     if (ac == 2 && std::string(av[1]) == "-h") {
         std::cout << USAGE << std::endl;
@@ -21,8 +22,10 @@ int main(int ac, char **av) {
         std::cerr << USAGE << std::endl;
         return MY_EXIT_FAILURE;
     }
-    while (1)
-        reception.placeOrders();
+    while (std::cin) {
+        getline(std::cin, orders);
+        reception.placeOrders(orders);
+    }
     return 0;
 }
 

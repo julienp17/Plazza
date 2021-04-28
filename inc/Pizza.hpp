@@ -49,8 +49,7 @@ milliseconds_t getPizzaBakeTime(const plz::PizzaType type);
 
 struct Pizza {
     Pizza(const std::string &pType, const std::string &pSize);
-    Pizza(const PizzaType pType, const PizzaSize pSize)
-        : type(pType), size(pSize) {}
+    Pizza(const PizzaType pType, const PizzaSize pSize);
 
     PizzaType type;
     PizzaSize size;

@@ -11,12 +11,10 @@
 #include "utils.hpp"
 
 namespace plz {
-void Reception::placeOrders(void) {
+void Reception::placeOrders(const std::string &orders_str) {
     VecStr_t orders;
-    std::string cmdLine;
 
-    getline(std::cin, cmdLine);
-    orders = split(cmdLine, ';');
+    orders = split(orders_str, ';');
     for (const std::string &order : orders)
         this->placeOrder(order);
 }

@@ -5,15 +5,22 @@
 ** Pizza
 */
 
+#include <string.h>
 #include <unordered_map>
 #include "Pizza.hpp"
 #include "Error.hpp"
 
 namespace plz {
-Pizza::Pizza(const std::string &pType, const std::string &size) {
-    this->type = getPizzaType(pType);
+Pizza::Pizza(const std::string &type, const std::string &size) {
+    this->type = getPizzaType(type);
     this->size = getPizzaSize(size);
     this->timeToBake = getPizzaBakeTime(this->type);
+}
+
+Pizza::Pizza(const PizzaType type, const PizzaSize size) {
+    this->type = type;
+    this->size = size;
+    this->timeToBake = getPizzaBakeTime(type);
 }
 
 PizzaType getPizzaType(const std::string &type) {
@@ -23,9 +30,10 @@ PizzaType getPizzaType(const std::string &type) {
     types.emplace("Margarita", PizzaType::Margarita);
     types.emplace("Americana", PizzaType::Americana);
     types.emplace("Fantasia", PizzaType::Fantasia);
-    if (types.find(type) == types.end())
-        throw PizzaError(type + ": unknown pizza type.");
-    return types[type];
+    for (auto &it : types)
+        if (strcasecmp(type.c_str(), it.first.c_str()) == 0)
+            return it.second;
+    throw PizzaError(type + ": unknown pizza type.");
 }
 
 PizzaSize getPizzaSize(const std::string &size) {
@@ -36,9 +44,10 @@ PizzaSize getPizzaSize(const std::string &size) {
     sizes.emplace("L", PizzaSize::L);
     sizes.emplace("XL", PizzaSize::XL);
     sizes.emplace("XXL", PizzaSize::XXL);
-    if (sizes.find(size) == sizes.end())
-        throw PizzaError(size + ": unknown pizza size.");
-    return sizes[size];
+    for (auto &it : sizes)
+        if (strcasecmp(size.c_str(), it.first.c_str()) == 0)
+            return it.second;
+    throw PizzaError(size + ": unknown pizza size.");
 }
 
 milliseconds_t getPizzaBakeTime(const PizzaType type) {

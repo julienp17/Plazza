@@ -22,6 +22,9 @@ OBJ_UT		=	$(SRC_UT:.cpp=.o)
 SRC_UT_D	=	tests/
 SRC_UT_F	=	testReception.cpp
 
+COV_F		=	$(SRC:.cpp=.gcno) $(SRC:.cpp=.gcda) \
+				$(SRC_UT:.cpp=.gcno) $(SRC_UT:.cpp=.gcda)
+
 INC			=	-I./inc
 
 CXXFLAGS	=	$(STD) $(INC) $(WFLAGS) $(COVFLAGS)
@@ -50,10 +53,11 @@ tests_run: clean $(OBJ) $(OBJ_UT)
 	./$(NAME_UT)
 
 coverage:
-	gcovr -ps --exclude $(MAIN) --exclude tests/
+	gcovr --sort-percentage --exclude $(MAIN) --exclude tests/
+	gcovr --branches --sort-percentage --exclude $(MAIN) --exclude tests/
 
 clean:
-	rm -f $(OBJ) $(OBJ_M) $(OBJ_UT) *.o *.gc*
+	rm -f $(OBJ) $(OBJ_M) $(OBJ_UT) $(COV_F)
 
 fclean: clean
 	rm -f $(NAME) $(NAME_UT)
