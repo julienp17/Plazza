@@ -22,11 +22,19 @@ enum PizzaType {
 
 /**
  * @brief Return an enum of PizzaType from a string
- * 
- * @param pType The Pizza type, as a string
- * @return The Pizza type, as an enum
+ *
+ * @param type The pizza type, as a string
+ * @return The pizza type, as an enum
  */
-PizzaType getPizzaType(const std::string &pType);
+PizzaType getPizzaType(const std::string &type);
+
+/**
+ * @brief Return a string of PizzaType from an enum
+ *
+ * @param type The pizza type, as an enum
+ * @return The pizza type, as a string
+ */
+std::string getPizzaType(const PizzaType type) noexcept;
 
 enum PizzaSize {
     S = 1,
@@ -39,10 +47,18 @@ enum PizzaSize {
 /**
  * @brief Return an enum of PizzaSize from a string
  * 
- * @param pType The Pizza size, as a string
- * @return The Pizza size, as an enum
+ * @param size The pizza size, as a string
+ * @return The pizza size, as an enum
  */
-PizzaSize getPizzaSize(const std::string &pType);
+PizzaSize getPizzaSize(const std::string &size);
+
+/**
+ * @brief Return a string of PizzaSize from an enum
+ *
+ * @param type The pizza size, as an enum
+ * @return The pizza size, as a string
+ */
+std::string getPizzaSize(const PizzaSize size) noexcept;
 
 milliseconds_t getPizzaBakeTime(const plz::PizzaType type);
 
@@ -55,8 +71,12 @@ struct Pizza {
     milliseconds_t timeToBake;
 };
 
-typedef std::shared_ptr<struct Pizza> PizzaPtr;
+typedef std::shared_ptr<struct Pizza> PizzaPtr_t;
 
 }  // namespace plz
+
+std::ostream &operator<<(std::ostream &out, const plz::PizzaType type);
+std::ostream &operator<<(std::ostream &out, const plz::PizzaSize size);
+std::ostream &operator<<(std::ostream &out, const plz::Pizza &pizza);
 
 #endif  // INC_PIZZA_HPP_
