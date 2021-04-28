@@ -11,12 +11,12 @@
 #include "Reception.hpp"
 #include "Error.hpp"
 
-static void testPizzaQueue(std::queue<plz::Pizza> &pizzaQueue, size_t nbPizzas,
-                    plz::PizzaType type, plz::PizzaSize size) {
-    plz::Pizza *pizza = nullptr;
+static void testPizzaQueue(plz::Reception::PizzaQueue_t &pizzaQueue,
+                    size_t nbPizzas, plz::PizzaType type, plz::PizzaSize size) {
+    plz::PizzaPtr_t pizza = nullptr;
 
     for (size_t i = 0 ; i < nbPizzas ; i++) {
-        pizza = &pizzaQueue.front();
+        pizza = pizzaQueue.front();
         ASSERT_EQ(pizza->type, type);
         ASSERT_EQ(pizza->size, size);
         pizzaQueue.pop();
@@ -25,8 +25,8 @@ static void testPizzaQueue(std::queue<plz::Pizza> &pizzaQueue, size_t nbPizzas,
 
 TEST(Reception, placeCorrectOrders) {
     plz::Reception reception;
+    plz::Reception::PizzaQueue_t pizzaQueue;
     std::string orders = "regina XXL x2; fantasia M x3; margarita S x1";
-    std::queue<plz::Pizza> pizzaQueue;
 
     reception.placeOrders(orders);
     pizzaQueue = reception.getPizzaQueue();
@@ -38,8 +38,8 @@ TEST(Reception, placeCorrectOrders) {
 
 TEST(Reception, placeCorrectOrder) {
     plz::Reception reception;
+    plz::Reception::PizzaQueue_t pizzaQueue;
     std::string order = "Americana XL x3";
-    std::queue<plz::Pizza> pizzaQueue;
 
     ASSERT_TRUE(reception.placeOrder(order));
     pizzaQueue = reception.getPizzaQueue();

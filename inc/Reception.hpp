@@ -17,9 +17,12 @@
 namespace plz {
 class Reception {
  public:
+    Reception(void);
     Reception(const float cookingMultiplier, const size_t nbCooks,
             const milliseconds_t stockTime);
     virtual ~Reception(void) {}
+
+    typedef std::queue<plz::PizzaPtr_t> PizzaQueue_t;
 
     /**
      * @brief Add pizzas to the queue
@@ -44,7 +47,7 @@ class Reception {
      *
      * @return The pizza queue
      */
-    inline const std::queue<PizzaPtr> &getPizzaQueue(void) const {
+    inline const PizzaQueue_t &getPizzaQueue(void) const {
        return _pizzas;
     }
 
@@ -75,10 +78,10 @@ class Reception {
     /**
      * @brief The queue of pizzas to be made
      */
-    std::queue<PizzaPtr> _pizzas;
+    std::queue<PizzaPtr_t> _pizzas;
 };
 
-typedef std::shared_ptr<Reception> ReceptionPtr;
+typedef std::shared_ptr<Reception> ReceptionPtr_t;
 }  // namespace plz
 
 #endif  // INC_RECEPTION_HPP_
