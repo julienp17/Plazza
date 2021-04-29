@@ -30,8 +30,8 @@ static bool args_are_correct(int ac, char **av) {
     return (
         ac == 4
         && isPositiveNumber<float>(av[1])
-        && isPositiveNumber<int>(av[2])
-        && isPositiveNumber<int>(av[3]));
+        && isPositiveNumber<size_t>(av[2])
+        && isPositiveNumber<size_t>(av[3]));
 }
 
 static void runReception(plz::Reception &reception) {
