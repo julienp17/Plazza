@@ -20,6 +20,8 @@ class Kitchen {
     Kitchen(void);
     virtual ~Kitchen(void) {}
 
+    void loop(void);
+
     /**
      * @brief Get the mapping of ingredients to their remaining stock
      *
@@ -39,6 +41,12 @@ class Kitchen {
 
     //* Mapping of ingredients to their remaining stock
     std::unordered_map<std::string, size_t> _stock;
+
+    //* Restocking timepoint
+    std::chrono::time_point<std::chrono::steady_clock> _restockTimepoint;
+
+    //* Active timepoint
+    std::chrono::time_point<std::chrono::steady_clock> _activeTimepoint;
 };
 }  // namespace plz
 

@@ -11,10 +11,13 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <chrono>
 
 using VecStr_t = std::vector<std::string>;
+using millis_t = size_t;
 
 VecStr_t split(const std::string &str, char delim);
+millis_t getElapsedTime(std::chrono::time_point<std::chrono::steady_clock> t1);
 
 template <typename T>
 bool isPositiveNumber(const std::string &str) {

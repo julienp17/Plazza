@@ -25,9 +25,4 @@
 #define exitUsage(stream, exitCode) \
     do { stream << USAGE << std::endl; return exitCode; } while (0)
 
-
-namespace plz {
-using millis_t = std::chrono::milliseconds;
-}
-
 #endif  // INC_PLAZZA_HPP_

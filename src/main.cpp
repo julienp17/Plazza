@@ -21,7 +21,7 @@ int main(int ac, char **av) {
         exitUsage(std::cerr, MY_EXIT_FAILURE);
     reception.setCookingMultipilier(getNumber<float>(av[1]));
     reception.setNbCooks(getNumber<size_t>(av[2]));
-    reception.setStockTime((plz::millis_t)getNumber<size_t>(av[3]));
+    reception.setStockTime(getNumber<size_t>(av[3]));
     runReception(reception);
     return 0;
 }
