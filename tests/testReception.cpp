@@ -30,6 +30,7 @@ TEST(Reception, placeCorrectOrders) {
 
     testing::internal::CaptureStdout();
     reception.placeOrders(orders);
+    testing::internal::GetCapturedStdout();
     pizzaQueue = reception.getPizzaQueue();
     ASSERT_EQ(pizzaQueue.size(), 6);
     testPizzaQueue(pizzaQueue, 2, plz::PizzaType::Regina, plz::PizzaSize::XXL);
@@ -44,6 +45,7 @@ TEST(Reception, placeCorrectOrder) {
 
     testing::internal::CaptureStdout();
     ASSERT_TRUE(reception.placeOrder(order));
+    testing::internal::GetCapturedStdout();
     pizzaQueue = reception.getPizzaQueue();
     ASSERT_EQ(pizzaQueue.size(), 3);
     testPizzaQueue(pizzaQueue, 3, plz::PizzaType::Americana, plz::PizzaSize::XL);
