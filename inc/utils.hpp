@@ -12,7 +12,7 @@
 #include <sstream>
 #include <vector>
 
-typedef std::vector<std::string> VecStr_t;
+using VecStr_t = std::vector<std::string>;
 
 VecStr_t split(const std::string &str, char delim);
 

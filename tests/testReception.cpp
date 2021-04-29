@@ -13,7 +13,7 @@
 
 static void testPizzaQueue(plz::Reception::PizzaQueue_t &pizzaQueue,
                     size_t nbPizzas, plz::PizzaType type, plz::PizzaSize size) {
-    plz::PizzaPtr_t pizza = nullptr;
+    std::shared_ptr<plz::Pizza> pizza = nullptr;
 
     for (size_t i = 0 ; i < nbPizzas ; i++) {
         pizza = pizzaQueue.front();
@@ -28,6 +28,7 @@ TEST(Reception, placeCorrectOrders) {
     plz::Reception::PizzaQueue_t pizzaQueue;
     std::string orders = "regina XXL x2; fantasia M x3; margarita S x1";
 
+    testing::internal::CaptureStdout();
     reception.placeOrders(orders);
     pizzaQueue = reception.getPizzaQueue();
     ASSERT_EQ(pizzaQueue.size(), 6);
@@ -41,6 +42,7 @@ TEST(Reception, placeCorrectOrder) {
     plz::Reception::PizzaQueue_t pizzaQueue;
     std::string order = "Americana XL x3";
 
+    testing::internal::CaptureStdout();
     ASSERT_TRUE(reception.placeOrder(order));
     pizzaQueue = reception.getPizzaQueue();
     ASSERT_EQ(pizzaQueue.size(), 3);
@@ -79,8 +81,8 @@ TEST_P(PlaceIncorrectOrders, test) {
     std::string stdoutOutput;
     std::string stderrOutput;
 
-    testing::internal::CaptureStderr();
     testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
     ASSERT_FALSE(reception.placeOrder(order));
     stdoutOutput = testing::internal::GetCapturedStdout();
     stderrOutput = testing::internal::GetCapturedStderr();

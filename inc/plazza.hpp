@@ -8,6 +8,7 @@
 #ifndef INC_PLAZZA_HPP_
 #define INC_PLAZZA_HPP_
 
+#include <memory>
 #include <queue>
 #include <chrono>
 #include "utils.hpp"
@@ -24,8 +25,9 @@
 #define exitUsage(stream, exitCode) \
     do { stream << USAGE << std::endl; return exitCode; } while (0)
 
+
 namespace plz {
-typedef std::chrono::milliseconds milliseconds_t;
+using millis_t = std::chrono::milliseconds;
 }
 
 #endif  // INC_PLAZZA_HPP_

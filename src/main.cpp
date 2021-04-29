@@ -10,23 +10,18 @@
 #include "Reception.hpp"
 
 static bool args_are_correct(int ac, char **av);
-static void runReception(const plz::ReceptionPtr_t reception);
+static void runReception(plz::Reception &reception);
 
 int main(int ac, char **av) {
-    plz::ReceptionPtr_t reception = nullptr;
-    float cookingMultiplier = 0.0f;
-    size_t nbCooks = 0;
-    plz::milliseconds_t stockTime;
+    plz::Reception reception;
 
     if (ac == 2 && std::string(av[1]) == "-h")
         exitUsage(std::cout, 0);
     else if (!args_are_correct(ac, av))
         exitUsage(std::cerr, MY_EXIT_FAILURE);
-    cookingMultiplier = getNumber<float>(av[1]);
-    nbCooks = getNumber<size_t>(av[2]);
-    stockTime = (plz::milliseconds_t)getNumber<size_t>(av[3]);
-    reception = plz::ReceptionPtr_t(new plz::Reception(cookingMultiplier,
-                                                    nbCooks, stockTime));
+    reception.setCookingMultipilier(getNumber<float>(av[1]));
+    reception.setNbCooks(getNumber<size_t>(av[2]));
+    reception.setStockTime((plz::millis_t)getNumber<size_t>(av[3]));
     runReception(reception);
     return 0;
 }
@@ -39,11 +34,11 @@ static bool args_are_correct(int ac, char **av) {
         && isPositiveNumber<int>(av[3]));
 }
 
-static void runReception(const plz::ReceptionPtr_t reception) {
+static void runReception(plz::Reception &reception) {
     std::string orders;
 
     while (std::cin) {
         getline(std::cin, orders);
-        reception->placeOrders(orders);
+        reception.placeOrders(orders);
     }
 }

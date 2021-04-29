@@ -60,7 +60,7 @@ PizzaSize getPizzaSize(const std::string &size);
  */
 std::string getPizzaSize(const PizzaSize size) noexcept;
 
-milliseconds_t getPizzaBakeTime(const plz::PizzaType type);
+millis_t getPizzaBakeTime(const plz::PizzaType type);
 
 struct Pizza {
     Pizza(const std::string &pType, const std::string &pSize);
@@ -68,10 +68,8 @@ struct Pizza {
 
     PizzaType type;
     PizzaSize size;
-    milliseconds_t timeToBake;
+    millis_t timeToBake;
 };
-
-typedef std::shared_ptr<struct Pizza> PizzaPtr_t;
 
 }  // namespace plz
 

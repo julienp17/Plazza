@@ -80,8 +80,8 @@ std::string getPizzaSize(const PizzaSize size) noexcept {
     return "Unknown pizza size.";
 }
 
-milliseconds_t getPizzaBakeTime(const PizzaType type) {
-    std::unordered_map<PizzaType, milliseconds_t> bakingTimes;
+millis_t getPizzaBakeTime(const PizzaType type) {
+    std::unordered_map<PizzaType, millis_t> bakingTimes;
 
     bakingTimes.emplace(PizzaType::Regina, 2000);
     bakingTimes.emplace(PizzaType::Margarita, 1000);

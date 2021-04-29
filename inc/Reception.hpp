@@ -19,10 +19,10 @@ class Reception {
  public:
     Reception(void);
     Reception(const float cookingMultiplier, const size_t nbCooks,
-            const milliseconds_t stockTime);
+            const millis_t stockTime);
     virtual ~Reception(void) {}
 
-    typedef std::queue<plz::PizzaPtr_t> PizzaQueue_t;
+    using PizzaQueue_t = std::queue<std::shared_ptr<Pizza>>;
 
     /**
      * @brief Add pizzas to the queue
@@ -51,6 +51,33 @@ class Reception {
        return _pizzas;
     }
 
+    /**
+     * @brief Set the cooking multipilier
+     *
+     * @param cookingMultiplier The new cooking multiplier
+     */
+    inline void setCookingMultipilier(const float cookingMultiplier) {
+       _cookingMultiplier = cookingMultiplier;
+    }
+
+    /**
+     * @brief Set the number of cooks per kitchen
+     *
+     * @param nbCooks The new number of cooks per kitchen
+     */
+    inline void setNbCooks(const size_t nbCooks) {
+       _nbCooks = nbCooks;
+    }
+
+    /**
+     * @brief Set the time needed for a kitchen to recharge their stock
+     * 
+     * @param stockTime The new stocking time
+     */
+    inline void setStockTime(const millis_t stockTime) {
+       _stockTime = stockTime;
+    }
+
  private:
     /**
      * @brief Checks if the order format is correct
@@ -73,15 +100,13 @@ class Reception {
     /**
      * @brief Time for a kitchen stock to replace ingredients
      */
-    milliseconds_t _stockTime;
+    millis_t _stockTime;
 
     /**
      * @brief The queue of pizzas to be made
      */
-    std::queue<PizzaPtr_t> _pizzas;
+    PizzaQueue_t _pizzas;
 };
-
-typedef std::shared_ptr<Reception> ReceptionPtr_t;
 }  // namespace plz
 
 #endif  // INC_RECEPTION_HPP_

@@ -12,13 +12,13 @@
 
 namespace plz {
 Reception::Reception(void) {
-    this->_cookingMultiplier = 2.0f;
-    this->_nbCooks = 5;
-    this->_stockTime = (milliseconds_t)2000;
+    this->_cookingMultiplier = 1.0f;
+    this->_nbCooks = 0;
+    this->_stockTime = (millis_t)2000;
 }
 
 Reception::Reception(const float cookingMultiplier, const size_t nbCooks,
-                    const milliseconds_t stockTime) {
+                    const millis_t stockTime) {
     this->_cookingMultiplier = cookingMultiplier;
     this->_nbCooks = nbCooks;
     this->_stockTime = stockTime;
@@ -33,7 +33,7 @@ void Reception::placeOrders(const std::string &orders_str) {
 }
 
 bool Reception::placeOrder(const std::string &order) {
-    PizzaPtr_t pizza = nullptr;
+    std::shared_ptr<Pizza> pizza = nullptr;
     size_t nbPizzas = 0;
     VecStr_t tokens = split(order, ' ');
 
@@ -41,8 +41,8 @@ bool Reception::placeOrder(const std::string &order) {
         std::cout << "Invalid order." << std::endl;
         return false;
     }
-    pizza = PizzaPtr_t(new Pizza(getPizzaType(tokens[0]),
-                                getPizzaSize(tokens[1])));
+    pizza = std::make_shared<Pizza>(getPizzaType(tokens[0]),
+                                    getPizzaSize(tokens[1]));
     nbPizzas = getNumber<size_t>(tokens[2].substr(1));
     for (size_t i = 0 ; i < nbPizzas ; i++)
         _pizzas.push(pizza);
