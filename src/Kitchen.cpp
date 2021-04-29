@@ -23,3 +23,11 @@ void Kitchen::initStock(const size_t startNb) {
         _stock[name] = startNb;
 }
 }  // namespace plz
+
+std::ostream &operator<<(std::ostream &out, const plz::Kitchen &kitchen) {
+    auto stock = kitchen.getStock();
+
+    for (const auto & [ name, remaining ] : stock)
+        out << "    " << name << ": " << remaining << std::endl;
+    return out;
+}

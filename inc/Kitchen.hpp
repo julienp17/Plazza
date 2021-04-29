@@ -42,4 +42,6 @@ class Kitchen {
 };
 }  // namespace plz
 
+std::ostream &operator<<(std::ostream &out, const plz::Kitchen &kitchen);
+
 #endif  // INC_KITCHEN_HPP_
