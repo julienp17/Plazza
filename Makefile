@@ -15,12 +15,14 @@ OBJ			=	$(SRC:.cpp=.o)
 SRC_D		=	src/
 SRC_F		=	utils.cpp \
 				Reception.cpp \
-				Pizza.cpp
+				Pizza.cpp \
+				Kitchen.cpp
 
 SRC_UT		=	$(addprefix $(SRC_UT_D), $(SRC_UT_F))
 OBJ_UT		=	$(SRC_UT:.cpp=.o)
 SRC_UT_D	=	tests/
-SRC_UT_F	=	testReception.cpp
+SRC_UT_F	=	testReception.cpp \
+				testKitchen.cpp
 
 COV_F		=	$(SRC:.cpp=.gcno) $(SRC:.cpp=.gcda) \
 				$(SRC_UT:.cpp=.gcno) $(SRC_UT:.cpp=.gcda)
