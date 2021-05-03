@@ -10,6 +10,9 @@
 
 #include <unordered_map>
 #include <string>
+#include <chrono>
+
+#define START_NB_INGREDIENTS        5
 
 namespace plz {
 /**
@@ -20,7 +23,15 @@ class Kitchen {
     Kitchen(void);
     virtual ~Kitchen(void) {}
 
+    /**
+     * @brief Main loop of the kitchen
+     */
     void loop(void);
+
+    /**
+     * @brief Restock the kitchen, by regenerating 1 unit of each ingredients
+     */
+    void restock(void);
 
     /**
      * @brief Get the mapping of ingredients to their remaining stock

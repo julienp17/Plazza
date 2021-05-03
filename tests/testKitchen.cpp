@@ -17,5 +17,15 @@ TEST(Kitchen, stockUponCreation) {
 
     stock = kitchen.getStock();
     for (const auto & [ name, remaining ] : stock)
-        ASSERT_EQ(remaining, 5);
+        ASSERT_EQ(remaining, START_NB_INGREDIENTS);
+}
+
+TEST(Kitchen, restocking) {
+    plz::Kitchen kitchen;
+    std::unordered_map<std::string, size_t> stock;
+
+    kitchen.restock();
+    stock = kitchen.getStock();
+    for (const auto & [ name, remaining ] : stock)
+        ASSERT_EQ(remaining, START_NB_INGREDIENTS + 1);
 }
