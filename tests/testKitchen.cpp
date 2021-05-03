@@ -12,20 +12,22 @@
 #include "Error.hpp"
 
 TEST(Kitchen, stockUponCreation) {
+    plz::KitchenSettings settings;
     plz::Kitchen kitchen;
     std::unordered_map<std::string, size_t> stock;
 
     stock = kitchen.getStock();
     for (const auto & [ name, remaining ] : stock)
-        ASSERT_EQ(remaining, START_NB_INGREDIENTS);
+        ASSERT_EQ(remaining, settings.startNbIngredients);
 }
 
 TEST(Kitchen, restocking) {
+    plz::KitchenSettings settings;
     plz::Kitchen kitchen;
     std::unordered_map<std::string, size_t> stock;
 
     kitchen.restock();
     stock = kitchen.getStock();
     for (const auto & [ name, remaining ] : stock)
-        ASSERT_EQ(remaining, START_NB_INGREDIENTS + 1);
+        ASSERT_EQ(remaining, settings.startNbIngredients + 1);
 }
