@@ -66,7 +66,7 @@ void Kitchen::loop(void) {
 
 void Kitchen::restock(void) {
     for (auto & [ name, remaining ] : this->_stock)
-        remaining++;
+        remaining += _settings.restockNb;
 }
 
 }  // namespace plz

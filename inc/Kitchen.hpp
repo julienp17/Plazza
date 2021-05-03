@@ -89,6 +89,15 @@ class Kitchen {
     void restock(void);
 
     /**
+     * @brief Get the kitchen's settings
+     *
+     * @return The settings of the kitchen
+     */
+    const KitchenSettings &getSettings(void) const {
+        return _settings;
+    }
+
+    /**
      * @brief Sets new settings for the kitchen
      *
      * @param settings The new settings for the kitchen
