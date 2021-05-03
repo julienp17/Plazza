@@ -16,6 +16,30 @@
 
 namespace plz {
 /**
+ * @brief Settings for a kitchen
+ */
+struct KitchenSettings {
+    KitchenSettings(void);
+    KitchenSettings(const float cookingMultiplier, const size_t nbCooks,
+                    const millis_t stockTime);
+
+    /**
+     * @brief Multiplier for the cooking time of the pizzas
+     */
+    float cookingMultiplier;
+
+    /**
+     * @brief Number of cooks per kitchen
+     */
+    size_t nbCooks;
+
+    /**
+     * @brief Time for a kitchen stock to replace ingredients
+     */
+    millis_t stockTime;
+};
+
+/**
  * @brief Produces pizzas for the reception made by concurrent cooks
  */
 class Kitchen {

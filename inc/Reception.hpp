@@ -13,13 +13,12 @@
 #include <queue>
 #include "plazza.hpp"
 #include "Pizza.hpp"
+#include "Kitchen.hpp"
 
 namespace plz {
 class Reception {
  public:
-    Reception(void);
-    Reception(const float cookingMultiplier, const size_t nbCooks,
-            const millis_t stockTime);
+    Reception(void) {}
     virtual ~Reception(void) {}
 
     using PizzaQueue_t = std::queue<std::shared_ptr<Pizza>>;
@@ -43,39 +42,21 @@ class Reception {
     bool placeOrder(const std::string &order);
 
     /**
+     * @brief Set the Kitchen Settings object
+     * 
+     * @param settings The new kitchen settings
+     */
+    void setKitchenSettings(const KitchenSettings &kitchenSettings) {
+       _kitchenSettings = kitchenSettings;
+    }
+
+    /**
      * @brief Get the pizza queue
      *
      * @return The pizza queue
      */
     inline const PizzaQueue_t &getPizzaQueue(void) const {
        return _pizzas;
-    }
-
-    /**
-     * @brief Set the cooking multipilier
-     *
-     * @param cookingMultiplier The new cooking multiplier
-     */
-    inline void setCookingMultipilier(const float cookingMultiplier) {
-       _cookingMultiplier = cookingMultiplier;
-    }
-
-    /**
-     * @brief Set the number of cooks per kitchen
-     *
-     * @param nbCooks The new number of cooks per kitchen
-     */
-    inline void setNbCooks(const size_t nbCooks) {
-       _nbCooks = nbCooks;
-    }
-
-    /**
-     * @brief Set the time needed for a kitchen to recharge their stock
-     * 
-     * @param stockTime The new stocking time
-     */
-    inline void setStockTime(const millis_t stockTime) {
-       _stockTime = stockTime;
     }
 
  private:
@@ -88,19 +69,9 @@ class Reception {
     bool orderIsCorrect(const VecStr_t &tokens);
 
     /**
-     * @brief Multiplier for the cooking time of the pizzas
+     * @brief Settings for the kitchens of the reception
      */
-    float _cookingMultiplier;
-
-    /**
-     * @brief Number of cooks per kitchen
-     */
-    size_t _nbCooks;
-
-    /**
-     * @brief Time for a kitchen stock to replace ingredients
-     */
-    millis_t _stockTime;
+    KitchenSettings _kitchenSettings;
 
     /**
      * @brief The queue of pizzas to be made

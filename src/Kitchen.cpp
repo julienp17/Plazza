@@ -10,6 +10,19 @@
 #include "Kitchen.hpp"
 
 namespace plz {
+KitchenSettings::KitchenSettings(void) {
+    this->cookingMultiplier = 1.0f;
+    this->nbCooks = 5;
+    this->stockTime = (millis_t)2000;
+}
+
+KitchenSettings::KitchenSettings(const float cookingMultiplier,
+                            const size_t nbCooks, const millis_t stockTime) {
+    this->cookingMultiplier = cookingMultiplier;
+    this->nbCooks = nbCooks;
+    this->stockTime = stockTime;
+}
+
 Kitchen::Kitchen(void) {
     this->initStock(START_NB_INGREDIENTS);
     _restockTimepoint = std::chrono::steady_clock::now();
