@@ -23,8 +23,7 @@ int main(int ac, char **av) {
         exitUsage(std::cerr, MY_EXIT_FAILURE);
     settings.cookingMultiplier = getNumber<float>(av[1]);
     settings.nbCooks = getNumber<size_t>(av[2]);
-    settings.stockTime = getNumber<size_t>(av[3]);
-    reception.setKitchenSettings(settings);
+    settings.restockTime = std::chrono::milliseconds(getNumber<size_t>(av[3]));
     runReception(reception);
     return 0;
 }

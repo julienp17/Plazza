@@ -15,8 +15,9 @@ namespace plz {
 KitchenSettings::KitchenSettings(void) {
     this->cookingMultiplier = 1.0f;
     this->nbCooks = 5;
-    this->stockTime = 2000;
     this->startNbIngredients = 5;
+    this->inactiveTime = std::chrono::milliseconds(5000);
+    this->restockTime = std::chrono::milliseconds(2000);
     this->restockNb = 1;
 }
 
@@ -50,11 +51,11 @@ void Kitchen::initStock(void) {
 /* ---------------------------- Member functions ---------------------------- */
 
 void Kitchen::loop(void) {
-    millis_t elapsedTime = 0;
+    std::chrono::milliseconds elapsedTime(0);
 
-    while (elapsedTime < 5000) {
+    while (elapsedTime < _settings.inactiveTime) {
         elapsedTime = getElapsedTime(this->_restockTimepoint);
-        if (elapsedTime > 2000) {
+        if (elapsedTime > _settings.restockTime) {
             std::cout << "Time to restock !" << std::endl;
             this->restock();
             this->_restockTimepoint = std::chrono::steady_clock::now();

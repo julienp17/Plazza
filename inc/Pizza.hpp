@@ -10,6 +10,7 @@
 
 #include <string>
 #include <memory>
+#include <chrono>
 #include "plazza.hpp"
 
 namespace plz {
@@ -60,7 +61,7 @@ PizzaSize getPizzaSize(const std::string &size);
  */
 std::string getPizzaSize(const PizzaSize size) noexcept;
 
-millis_t getPizzaBakeTime(const plz::PizzaType type);
+std::chrono::milliseconds getPizzaBakeTime(const plz::PizzaType type);
 
 struct Pizza {
     Pizza(const std::string &pType, const std::string &pSize);
@@ -68,7 +69,7 @@ struct Pizza {
 
     PizzaType type;
     PizzaSize size;
-    millis_t timeToBake;
+    std::chrono::milliseconds timeToBake;
 };
 
 }  // namespace plz

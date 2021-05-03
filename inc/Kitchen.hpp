@@ -34,14 +34,19 @@ struct KitchenSettings {
     size_t nbCooks;
 
     /**
-     * @brief Time for a kitchen stock to replace ingredients
-     */
-    millis_t stockTime;
-
-    /**
      * @brief The starting stock of each ingredient
      */
     size_t startNbIngredients;
+
+    /**
+     * @brief Time for a kitchen stock to replace ingredients
+     */
+    std::chrono::milliseconds restockTime;
+
+    /**
+     * @brief Maximum time for a kitchen to be inactive before it closes
+     */
+    std::chrono::milliseconds inactiveTime;
 
     /**
      * @brief The number to restock for each ingredient

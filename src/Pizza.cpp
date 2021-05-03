@@ -13,21 +13,21 @@
 static std::unordered_map<std::string, plz::PizzaType> getPizzaTypeMap(void) {
     std::unordered_map<std::string, plz::PizzaType> types;
 
-    types.emplace("Regina", plz::PizzaType::Regina);
-    types.emplace("Margarita", plz::PizzaType::Margarita);
-    types.emplace("Americana", plz::PizzaType::Americana);
-    types.emplace("Fantasia", plz::PizzaType::Fantasia);
+    types["Regina"] = plz::PizzaType::Regina;
+    types["Margarita"] = plz::PizzaType::Margarita;
+    types["Americana"] = plz::PizzaType::Americana;
+    types["Fantasia"] = plz::PizzaType::Fantasia;
     return types;
 }
 
 static std::unordered_map<std::string, plz::PizzaSize> getPizzaSizeMap(void) {
     std::unordered_map<std::string, plz::PizzaSize> sizes;
 
-    sizes.emplace("S", plz::PizzaSize::S);
-    sizes.emplace("M", plz::PizzaSize::M);
-    sizes.emplace("L", plz::PizzaSize::L);
-    sizes.emplace("XL", plz::PizzaSize::XL);
-    sizes.emplace("XXL", plz::PizzaSize::XXL);
+    sizes["S"] = plz::PizzaSize::S;
+    sizes["M"] = plz::PizzaSize::M;
+    sizes["L"] = plz::PizzaSize::L;
+    sizes["XL"] = plz::PizzaSize::XL;
+    sizes["XXL"] = plz::PizzaSize::XXL;
     return sizes;
 }
 
@@ -80,13 +80,13 @@ std::string getPizzaSize(const PizzaSize size) noexcept {
     return "Unknown pizza size.";
 }
 
-millis_t getPizzaBakeTime(const PizzaType type) {
-    std::unordered_map<PizzaType, millis_t> bakingTimes;
+std::chrono::milliseconds getPizzaBakeTime(const PizzaType type) {
+    std::unordered_map<PizzaType, std::chrono::milliseconds> bakingTimes;
 
-    bakingTimes.emplace(PizzaType::Regina, 2000);
-    bakingTimes.emplace(PizzaType::Margarita, 1000);
-    bakingTimes.emplace(PizzaType::Americana, 2000);
-    bakingTimes.emplace(PizzaType::Fantasia, 4000);
+    bakingTimes[PizzaType::Regina] = std::chrono::milliseconds(2000);
+    bakingTimes[PizzaType::Margarita] = std::chrono::milliseconds(1000);
+    bakingTimes[PizzaType::Americana] = std::chrono::milliseconds(2000);
+    bakingTimes[PizzaType::Fantasia] = std::chrono::milliseconds(4000);
     if (bakingTimes.find(type) == bakingTimes.end())
         throw PizzaError(type + ": unknown pizza type.");
     return bakingTimes[type];
