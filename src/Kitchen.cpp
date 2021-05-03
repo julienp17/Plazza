@@ -51,16 +51,12 @@ void Kitchen::initStock(void) {
 /* ---------------------------- Member functions ---------------------------- */
 
 void Kitchen::loop(void) {
-    std::chrono::milliseconds elapsedTime(0);
-
-    while (elapsedTime < _settings.inactiveTime) {
-        elapsedTime = getElapsedTime(this->_restockTimepoint);
-        if (elapsedTime > _settings.restockTime) {
+    while (getElapsedTime(this->_activeTimepoint) < _settings.inactiveTime) {
+        if (getElapsedTime(this->_restockTimepoint) > _settings.restockTime) {
             std::cout << "Time to restock !" << std::endl;
             this->restock();
             this->_restockTimepoint = std::chrono::steady_clock::now();
         }
-        elapsedTime = getElapsedTime(this->_activeTimepoint);
     }
     std::cout << "Time to close!" << std::endl;
 }
