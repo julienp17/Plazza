@@ -10,46 +10,56 @@
 #include "Kitchen.hpp"
 
 namespace plz {
+/* ----------------------- Constructors / Destructors ----------------------- */
+
 KitchenSettings::KitchenSettings(void) {
     this->cookingMultiplier = 1.0f;
     this->nbCooks = 5;
-    this->stockTime = (millis_t)2000;
-}
-
-KitchenSettings::KitchenSettings(const float cookingMultiplier,
-                            const size_t nbCooks, const millis_t stockTime) {
-    this->cookingMultiplier = cookingMultiplier;
-    this->nbCooks = nbCooks;
-    this->stockTime = stockTime;
+    this->stockTime = 2000;
+    this->startNbIngredients = 5;
+    this->restockNb = 1;
 }
 
 Kitchen::Kitchen(void) {
-    this->initStock(START_NB_INGREDIENTS);
-    _restockTimepoint = std::chrono::steady_clock::now();
-    _activeTimepoint = std::chrono::steady_clock::now();
+    this->init();
 }
 
-void Kitchen::initStock(const size_t startNb) {
+Kitchen::Kitchen(const KitchenSettings &settings) {
+    this->_settings = settings;
+    this->init();
+}
+
+/* ------------------------ Initialization functions ------------------------ */
+
+void Kitchen::init(void) {
+    this->initStock();
+    this->_restockTimepoint = std::chrono::steady_clock::now();
+    this->_activeTimepoint = std::chrono::steady_clock::now();
+}
+
+void Kitchen::initStock(void) {
     VecStr_t ingredientsName = {
         "doe", "tomato", "gruyere", "ham", "mushrooms", "steak", "eggplant",
         "goat cheese", "chief love"
     };
 
     for (const std::string &name : ingredientsName)
-        _stock[name] = startNb;
+        this->_stock[name] = this->_settings.startNbIngredients;
 }
+
+/* ---------------------------- Member functions ---------------------------- */
 
 void Kitchen::loop(void) {
     millis_t elapsedTime = 0;
 
     while (elapsedTime < 5000) {
-        elapsedTime = getElapsedTime(_restockTimepoint);
+        elapsedTime = getElapsedTime(this->_restockTimepoint);
         if (elapsedTime > 2000) {
             std::cout << "Time to restock !" << std::endl;
             this->restock();
             this->_restockTimepoint = std::chrono::steady_clock::now();
         }
-        elapsedTime = getElapsedTime(_activeTimepoint);
+        elapsedTime = getElapsedTime(this->_activeTimepoint);
     }
     std::cout << "Time to close!" << std::endl;
 }
@@ -60,6 +70,8 @@ void Kitchen::restock(void) {
 }
 
 }  // namespace plz
+
+/* -------------------------- Operator overloading -------------------------- */
 
 std::ostream &operator<<(std::ostream &out, const plz::Kitchen &kitchen) {
     auto stock = kitchen.getStock();

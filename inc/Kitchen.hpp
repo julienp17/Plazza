@@ -12,16 +12,15 @@
 #include <string>
 #include <chrono>
 
-#define START_NB_INGREDIENTS        5
-
 namespace plz {
 /**
  * @brief Settings for a kitchen
  */
 struct KitchenSettings {
+    /**
+     * @brief Construct a new Kitchen Settings object with default values
+     */
     KitchenSettings(void);
-    KitchenSettings(const float cookingMultiplier, const size_t nbCooks,
-                    const millis_t stockTime);
 
     /**
      * @brief Multiplier for the cooking time of the pizzas
@@ -29,7 +28,7 @@ struct KitchenSettings {
     float cookingMultiplier;
 
     /**
-     * @brief Number of cooks per kitchen
+     * @brief Number of cooks in the kitchen
      */
     size_t nbCooks;
 
@@ -37,6 +36,16 @@ struct KitchenSettings {
      * @brief Time for a kitchen stock to replace ingredients
      */
     millis_t stockTime;
+
+    /**
+     * @brief The starting stock of each ingredient
+     */
+    size_t startNbIngredients;
+
+    /**
+     * @brief The number to restock for each ingredient
+     */
+    size_t restockNb;
 };
 
 /**
@@ -44,7 +53,25 @@ struct KitchenSettings {
  */
 class Kitchen {
  public:
+    /**
+     * @brief Default constructor for a kitchen
+     *
+     * Creates a kitchen with default settings
+     */
     Kitchen(void);
+
+    /**
+     * @brief Construct a new Kitchen object with specified settings
+     *
+     * @param settings The settings of the kitchen to create
+     */
+    explicit Kitchen(const KitchenSettings &settings);
+
+    /**
+     * @brief Destroy the Kitchen object
+     *
+     * Does nothing
+     */
     virtual ~Kitchen(void) {}
 
     /**
@@ -53,9 +80,21 @@ class Kitchen {
     void loop(void);
 
     /**
-     * @brief Restock the kitchen, by regenerating 1 unit of each ingredients
+     * @brief Restock the kitchen
+     *
+     * Regenerates N unit of each ingredients, with N being the number specified
+     * by settings.restockNb
      */
     void restock(void);
+
+    /**
+     * @brief Sets new settings for the kitchen
+     *
+     * @param settings The new settings for the kitchen
+     */
+    void setSettings(const KitchenSettings &settings) {
+        _settings = settings;
+    }
 
     /**
      * @brief Get the mapping of ingredients to their remaining stock
@@ -68,11 +107,18 @@ class Kitchen {
 
  private:
     /**
-     * @brief Restock the ingredients upon kitchen creation
+     * @brief Initialize the kitchen, called by the constructors
      *
-     * @param startNb The starting number of each ingredients
      */
-    void initStock(const size_t startNb);
+    void init(void);
+
+    /**
+     * @brief Initialize the kitchen stock
+     */
+    void initStock(void);
+
+    //* The settings of the kitchen
+    KitchenSettings _settings;
 
     //* Mapping of ingredients to their remaining stock
     std::unordered_map<std::string, size_t> _stock;
