@@ -47,7 +47,7 @@ class Reception {
      * @param settings The new kitchen settings
      */
     void setKitchenSettings(const KitchenSettings &kitchenSettings) {
-       _kitchenSettings = kitchenSettings;
+        _kitchenSettings = kitchenSettings;
     }
 
     /**
@@ -56,7 +56,7 @@ class Reception {
      * @return The pizza queue
      */
     inline const PizzaQueue_t &getPizzaQueue(void) const {
-       return _pizzas;
+        return _pizzas;
     }
 
  private:
