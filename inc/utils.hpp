@@ -20,6 +20,7 @@ std::chrono::milliseconds getElapsedTime(
     std::chrono::time_point<std::chrono::steady_clock> t1);
 void resetTimepoint(
         std::chrono::time_point<std::chrono::steady_clock> &timepoint);
+std::string getRandomName(void);
 
 template <typename T>
 bool isPositiveNumber(const std::string &str) {

@@ -5,6 +5,8 @@
 ** utils
 */
 
+#include <vector>
+#include <random>
 #include "utils.hpp"
 
 VecStr_t split(const std::string &str, char delim) {
@@ -28,4 +30,18 @@ std::chrono::milliseconds getElapsedTime(
 void resetTimepoint(
         std::chrono::time_point<std::chrono::steady_clock> &timepoint) {
     timepoint = std::chrono::steady_clock::now();
+}
+
+std::string getRandomName(void) {
+    std::vector<std::string> names = {
+        "Lolo", "Paul", "Laura", "Estellia", "Dorian", "Julien", "Tristan",
+        "Antoine", "Anthony", "William", "Kevin", "Clément", "Thomas", "Dylan",
+        "Laurent", "Didier", "Robert", "Samuel", "Etienne", "Luan", "Jules",
+        "Matéo", "Mathias", "Jackie", "Michel", "Marc", "Marie", "Carlos",
+        "Juan", "Fred", "Teddy", "Salt Bae", "Brice", "Philippe", "Etchebest",
+        "Gordon", "Paolo", "Andrea", "Johnny", "Cyril", "Itodoki", "Bilel",
+        "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco"
+    };
+
+    return names[rand() % names.size()];
 }
