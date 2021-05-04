@@ -10,6 +10,9 @@
 
 #include <unordered_map>
 #include <string>
+#include <atomic>
+#include <thread>
+#include <mutex>
 #include <chrono>
 #include "utils.hpp"
 
@@ -94,6 +97,13 @@ class Kitchen {
     void restock(void);
 
     /**
+     * @brief Consume an ingredient from the stock
+     *
+     * @param name The ingredient's name
+     */
+    void useIngredient(const std::string &name);
+
+    /**
      * @brief Get the kitchen's settings
      *
      * @return The settings of the kitchen
@@ -132,16 +142,31 @@ class Kitchen {
      */
     void initStock(void);
 
+    void cookWorker(void);
+
+    std::atomic<bool> _isOpen;
+
+    std::mutex _stockMutex;
+
+    std::thread _cook1;
+    std::thread _cook2;
+
     //* The settings of the kitchen
     KitchenSettings _settings;
 
     //* Mapping of ingredients to their remaining stock
     std::unordered_map<std::string, size_t> _stock;
 
-    //* Restocking timepoint
+    //* Timepoint to the last time the kitchen restocked
     std::chrono::time_point<std::chrono::steady_clock> _restockTimepoint;
 
-    //* Active timepoint
+    /**
+     * @brief The timepoint at where the kitchen was last active
+     *
+     * A kitchen closes when it is inactive for N amount of time, with N being
+     * the number specified in the kitchen's settings. Inactive means that there
+     * are no pizza orders received or no cooks working in that amount of time.
+     */
     std::chrono::time_point<std::chrono::steady_clock> _activeTimepoint;
 };
 }  // namespace plz

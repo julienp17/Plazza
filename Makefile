@@ -39,6 +39,8 @@ DBFLAGS		=	-g -g3 -ggdb
 
 COVFLAGS 	=   --coverage -g -O0
 
+LDFLAGS		=	-lpthread
+
 LDFLAGS_UT  =	-lgtest -lgtest_main -lpthread
 
 NAME		=	plazza
@@ -48,10 +50,10 @@ NAME_UT		=	unit_tests
 all: $(NAME)
 
 $(NAME): $(OBJ_M) $(OBJ)
-	$(CC) $(CXXFLAGS) -o $(NAME) $(OBJ_M) $(OBJ)
+	$(CC) $(CXXFLAGS) -o $(NAME) $(OBJ_M) $(OBJ) $(LDFLAGS)
 
 tests_run: clean $(OBJ) $(OBJ_UT)
-	$(CC) $(CXXFLAGS) -o $(NAME_UT) $(OBJ) $(OBJ_UT) $(LDFLAGS_UT)
+	$(CC) $(CXXFLAGS) -o $(NAME_UT) $(OBJ) $(OBJ_UT) $(LDFLAGS) $(LDFLAGS_UT)
 	./$(NAME_UT)
 
 coverage:
