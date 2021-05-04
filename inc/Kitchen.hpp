@@ -8,14 +8,20 @@
 #ifndef INC_KITCHEN_HPP_
 #define INC_KITCHEN_HPP_
 
-#include <unordered_map>
 #include <string>
-#include <atomic>
+#include <memory>
+#include <chrono>
+
+#include <unordered_map>
+#include <queue>
 #include <vector>
+
+#include <atomic>
 #include <thread>
 #include <mutex>
-#include <chrono>
+
 #include "utils.hpp"
+#include "Pizza.hpp"
 
 namespace plz {
 /**
@@ -88,6 +94,15 @@ class Kitchen {
      * @brief Main loop of the kitchen
      */
     void run(void);
+
+    /**
+     * @brief Adds a pizza to the queue
+     *
+     * @param pizza The pizza to be made
+     */
+    void addPizza(std::shared_ptr<Pizza> pizza) {
+        _pizzas.push(pizza);
+    }
 
     /**
      * @brief Restock the kitchen
@@ -163,18 +178,19 @@ class Kitchen {
     bool shouldClose(void) const;
 
     /**
+     * @brief Starts every cook's thread with the cookWorker member function
+     */
+    void putCooksToWork(void);
+
+    /**
      * @brief Thread function for each cook
      *
      * Checks if a pizza is ready to be made from the queue. If it is, sleep
      * for the amount of time the pizza needs to be baked, else yield.
      *
+     * @param settings The name of the cook
      */
-    void cookWorker(void);
-
-    /**
-     * @brief Starts every cook's thread with the cookWorker member function
-     */
-    void putCooksToWork(void);
+    void cookWorker(const std::string &name = "Cook");
 
     /**
      * @brief Checks if the kitchen is currently active
@@ -188,8 +204,14 @@ class Kitchen {
     //* The cooks of the kitchen, represented by threads
     std::vector<std::thread> _cooks;
 
+    //* The queue of pizzas to be made
+    std::queue<std::shared_ptr<Pizza>> _pizzas;
+
     //* Mapping of ingredients to their remaining stock
     std::unordered_map<std::string, size_t> _stock;
+
+    //* The mutex used for accessing the queue
+    std::mutex _queueMutex;
 
     //* The mutex used for consumming stocks
     std::mutex _stockMutex;

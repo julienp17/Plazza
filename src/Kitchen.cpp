@@ -65,10 +65,12 @@ void Kitchen::run(void) {
     this->putCooksToWork();
     resetTimepoint(this->_restockTimepoint);
     resetTimepoint(this->_activeTimepoint);
+    this->addPizza(std::make_shared<Pizza>(Margarita, S));
     while (this->_isOpen) {
         if (this->shouldRestock()) {
             std::cout << "Time to restock !" << std::endl;
             this->restock();
+            this->addPizza(std::make_shared<Pizza>(Margarita, L));
             resetTimepoint(this->_restockTimepoint);
         }
         if (this->shouldClose()) {
@@ -79,24 +81,34 @@ void Kitchen::run(void) {
 }
 
 void Kitchen::putCooksToWork(void) {
+    std::string name;
+
     try {
-        for (size_t i = 0 ; i < _settings.nbCooks ; i++)
-            _cooks.push_back(std::thread(&Kitchen::cookWorker, this));
+        for (size_t i = 0 ; i < _settings.nbCooks ; i++) {
+            name = getRandomName();
+            _cooks.push_back(std::thread(&Kitchen::cookWorker, this, name));
+        }
     } catch (const std::system_error &err) {
         throw KitchenError(err.what());
     }
 }
 
-void Kitchen::cookWorker(void) {
-    auto startPoint =  std::chrono::steady_clock::now();
+void Kitchen::cookWorker(const std::string &name) {
+    std::shared_ptr<Pizza> pizza = nullptr;
 
+    // std::cout << "Hey i'm starting to work" << std::endl;
     while (this->_isOpen) {
-        if (getElapsedTime(startPoint) > std::chrono::milliseconds(1000)) {
-            std::lock_guard<std::mutex> guard(this->_stockMutex);
-            this->useIngredient("doe");
-            std::cout << "Thread " << std::this_thread::get_id <<
-                " used some doe, left = " << this->_stock["doe"] << std::endl;
-            startPoint = std::chrono::steady_clock::now();
+        std::unique_lock<std::mutex> lock(_queueMutex);
+        if (!_pizzas.empty()) {
+            pizza = _pizzas.front();
+            _pizzas.pop();
+            lock.unlock();
+            std::cout << name << ": Hey i'm making the " << *pizza << std::endl;
+            std::this_thread::sleep_for(pizza->timeToBake * _settings.cookingMultiplier);
+            std::cout << name << ": Hey I finished the " << *pizza << std::endl;
+        } else {
+            lock.unlock();
+            std::this_thread::yield();
         }
     }
 }
