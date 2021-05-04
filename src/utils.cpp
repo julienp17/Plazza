@@ -24,3 +24,8 @@ std::chrono::milliseconds getElapsedTime(
 
     return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 }
+
+void resetTimepoint(
+        std::chrono::time_point<std::chrono::steady_clock> &timepoint) {
+    timepoint = std::chrono::steady_clock::now();
+}

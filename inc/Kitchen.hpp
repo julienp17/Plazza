@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <string>
 #include <atomic>
+#include <vector>
 #include <thread>
 #include <mutex>
 #include <chrono>
@@ -79,14 +80,14 @@ class Kitchen {
     /**
      * @brief Destroy the Kitchen object
      *
-     * Does nothing
+     * Waits for every cook to finish their shift
      */
-    virtual ~Kitchen(void) {}
+    virtual ~Kitchen(void);
 
     /**
      * @brief Main loop of the kitchen
      */
-    void loop(void);
+    void run(void);
 
     /**
      * @brief Restock the kitchen
@@ -132,42 +133,75 @@ class Kitchen {
 
  private:
     /**
-     * @brief Initialize the kitchen, called by the constructors
+     * @brief Initialize the kitchen
      *
+     * This function is called by the constructors
      */
     void init(void);
 
     /**
      * @brief Initialize the kitchen stock
+     *
+     * Puts N number of each ingredient in the stock, with N being the number
+     * specified in settings.startNbIngredients
      */
     void initStock(void);
 
-    void cookWorker(void);
-
-    std::atomic<bool> _isOpen;
-
-    std::mutex _stockMutex;
-
-    std::thread _cook1;
-    std::thread _cook2;
-
-    //* The settings of the kitchen
-    KitchenSettings _settings;
-
-    //* Mapping of ingredients to their remaining stock
-    std::unordered_map<std::string, size_t> _stock;
-
-    //* Timepoint to the last time the kitchen restocked
-    std::chrono::time_point<std::chrono::steady_clock> _restockTimepoint;
+    /**
+     * @brief Checks if the kitchen should restock
+     *
+     * @return true if its time to restock, false otherwise
+     */
+    bool shouldRestock(void) const;
 
     /**
-     * @brief The timepoint at where the kitchen was last active
+     * @brief Checks if the kitchen should close
+     *
+     * @return true if the kitchen has been inactive for enough time,
+     * false otherwise
+     */
+    bool shouldClose(void) const;
+
+    /**
+     * @brief Thread function for each cook
+     *
+     * Checks if a pizza is ready to be made from the queue. If it is, sleep
+     * for the amount of time the pizza needs to be baked, else yield.
+     *
+     */
+    void cookWorker(void);
+
+    /**
+     * @brief Starts every cook's thread with the cookWorker member function
+     */
+    void putCooksToWork(void);
+
+    /**
+     * @brief Checks if the kitchen is currently active
      *
      * A kitchen closes when it is inactive for N amount of time, with N being
      * the number specified in the kitchen's settings. Inactive means that there
      * are no pizza orders received or no cooks working in that amount of time.
      */
+    std::atomic<bool> _isOpen;
+
+    //* The cooks of the kitchen, represented by threads
+    std::vector<std::thread> _cooks;
+
+    //* Mapping of ingredients to their remaining stock
+    std::unordered_map<std::string, size_t> _stock;
+
+    //* The mutex used for consumming stocks
+    std::mutex _stockMutex;
+
+    //* Timepoint to the last time the kitchen restocked
+    std::chrono::time_point<std::chrono::steady_clock> _restockTimepoint;
+
+    //* The timepoint at where the kitchen was last active
     std::chrono::time_point<std::chrono::steady_clock> _activeTimepoint;
+
+    //* The settings of the kitchen
+    KitchenSettings _settings;
 };
 }  // namespace plz
 

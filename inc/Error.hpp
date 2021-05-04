@@ -28,13 +28,20 @@ class Error : public std::exception {
     std::string _message;
 };
 
+/** @class KitchenError
+ * @brief Errors related to kitchens
+ */
+class KitchenError : public Error {
+ public:
+    explicit KitchenError(std::string const &message) : Error(message) {}
+};
+
 /** @class PizzaError
  * @brief Errors related to pizzas
  */
 class PizzaError : public Error {
  public:
-    explicit PizzaError(std::string const &message)
-        : Error(message) {}
+    explicit PizzaError(std::string const &message) : Error(message) {}
 };
 }  // namespace plz
 
