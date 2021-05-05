@@ -11,6 +11,7 @@
 #include <string>
 #include <memory>
 #include <chrono>
+#include <vector>
 #include "plazza.hpp"
 
 namespace plz {
@@ -62,14 +63,23 @@ PizzaSize getPizzaSize(const std::string &size);
 std::string getPizzaSize(const PizzaSize size) noexcept;
 
 std::chrono::milliseconds getPizzaBakeTime(const plz::PizzaType type);
+std::vector<std::string> getPizzaIngredients(const PizzaType type);
 
 struct Pizza {
-    Pizza(const std::string &pType, const std::string &pSize);
-    Pizza(const PizzaType pType, const PizzaSize pSize);
+    Pizza(const std::string &type, const std::string &size);
+    Pizza(const PizzaType type, const PizzaSize pSize);
 
+    //* The type of the pizza, defined by the PizzaType enum
     PizzaType type;
+
+    //* The size of the pizza, defined by the PizzaSize enum
     PizzaSize size;
+
+    //* The default time for the pizza to bake
     std::chrono::milliseconds timeToBake;
+
+    //* The ingredients required to make the pizza
+    std::vector<std::string> ingredients;
 };
 
 }  // namespace plz

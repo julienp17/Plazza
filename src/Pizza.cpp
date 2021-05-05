@@ -10,6 +10,8 @@
 #include "Pizza.hpp"
 #include "Error.hpp"
 
+/* ---------------------------- Static functions ---------------------------- */
+
 static std::unordered_map<std::string, plz::PizzaType> getPizzaTypeMap(void) {
     std::unordered_map<std::string, plz::PizzaType> types;
 
@@ -31,18 +33,49 @@ static std::unordered_map<std::string, plz::PizzaSize> getPizzaSizeMap(void) {
     return sizes;
 }
 
+static std::unordered_map<plz::PizzaType, std::chrono::milliseconds>
+                                                getPizzaBakeTimeMap(void) {
+    std::unordered_map<plz::PizzaType, std::chrono::milliseconds> bakingTimes;
+
+    bakingTimes[plz::PizzaType::Regina] = std::chrono::milliseconds(2000);
+    bakingTimes[plz::PizzaType::Margarita] = std::chrono::milliseconds(1000);
+    bakingTimes[plz::PizzaType::Americana] = std::chrono::milliseconds(2000);
+    bakingTimes[plz::PizzaType::Fantasia] = std::chrono::milliseconds(4000);
+    return bakingTimes;
+}
+
+static std::unordered_map<plz::PizzaType, std::vector<std::string>>
+                                                getPizzaIngredientsMap(void) {
+    std::unordered_map<plz::PizzaType, std::vector<std::string>> ingredients;
+
+    ingredients[plz::PizzaType::Regina] = std::vector<std::string>
+        {"doe", "tomato", "gruyere", "ham", "mushrooms"};
+    ingredients[plz::PizzaType::Margarita] = std::vector<std::string>
+        {"doe", "tomato", "gruyere"};
+    ingredients[plz::PizzaType::Americana] = std::vector<std::string>
+        {"doe", "tomato", "gruyere", "steak"};
+    ingredients[plz::PizzaType::Fantasia] = std::vector<std::string>
+        {"doe", "tomato", "eggplant", "goat cheese", "chief love"};
+    return ingredients;
+}
+
 namespace plz {
+/* ----------------------- Constructors / Destructors ----------------------- */
 Pizza::Pizza(const std::string &type, const std::string &size) {
     this->type = getPizzaType(type);
     this->size = getPizzaSize(size);
     this->timeToBake = getPizzaBakeTime(this->type);
+    this->ingredients = getPizzaIngredients(this->type);
 }
 
 Pizza::Pizza(const PizzaType type, const PizzaSize size) {
     this->type = type;
     this->size = size;
     this->timeToBake = getPizzaBakeTime(type);
+    this->ingredients = getPizzaIngredients(this->type);
 }
+
+/* ---------------------------- Getters / Setters --------------------------- */
 
 PizzaType getPizzaType(const std::string &type) {
     std::unordered_map<std::string, PizzaType> types = getPizzaTypeMap();
@@ -81,17 +114,26 @@ std::string getPizzaSize(const PizzaSize size) noexcept {
 }
 
 std::chrono::milliseconds getPizzaBakeTime(const PizzaType type) {
-    std::unordered_map<PizzaType, std::chrono::milliseconds> bakingTimes;
+    std::unordered_map<PizzaType, std::chrono::milliseconds> bakingTimes =
+        getPizzaBakeTimeMap();
 
-    bakingTimes[PizzaType::Regina] = std::chrono::milliseconds(2000);
-    bakingTimes[PizzaType::Margarita] = std::chrono::milliseconds(1000);
-    bakingTimes[PizzaType::Americana] = std::chrono::milliseconds(2000);
-    bakingTimes[PizzaType::Fantasia] = std::chrono::milliseconds(4000);
     if (bakingTimes.find(type) == bakingTimes.end())
         throw PizzaError(type + ": unknown pizza type.");
     return bakingTimes[type];
 }
+
+std::vector<std::string> getPizzaIngredients(const PizzaType type) {
+    std::unordered_map<PizzaType, std::vector<std::string>> ingredients =
+        getPizzaIngredientsMap();
+
+    if (ingredients.find(type) == ingredients.end())
+        throw PizzaError(type + ": unknown pizza type.");
+    return ingredients[type];
+}
+
 }  // namespace plz
+
+/* -------------------------- Operator overloading -------------------------- */
 
 std::ostream &operator<<(std::ostream &out, const plz::PizzaType type) {
     std::string typeStr = plz::getPizzaType(type);
