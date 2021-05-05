@@ -6,6 +6,7 @@
 */
 
 #include <iostream>
+#include <algorithm>
 #include "plazza.hpp"
 #include "Kitchen.hpp"
 #include "Error.hpp"
@@ -32,9 +33,10 @@ Kitchen::Kitchen(const KitchenSettings &settings) {
 }
 
 Kitchen::~Kitchen(void) {
-    for (auto &cook : _cooks)
-        if (cook.joinable())
-            cook.join();
+    for (auto &pair : _cooks) {
+        if (pair.second.joinable())
+            pair.second.join();
+    }
 }
 
 /* ------------------------ Initialization functions ------------------------ */
@@ -42,10 +44,9 @@ Kitchen::~Kitchen(void) {
 void Kitchen::init(void) {
     this->_isOpen = false;
     this->initStock();
-    this->_cooks.clear();
-    this->_cooks.reserve(this->_settings.nbCooks);
-    resetTimepoint(this->_restockTimepoint);
-    resetTimepoint(this->_activeTimepoint);
+    this->initCooks();
+    resetTimepoint(this->_lastRestock);
+    resetTimepoint(this->_lastActive);
 }
 
 void Kitchen::initStock(void) {
@@ -58,20 +59,32 @@ void Kitchen::initStock(void) {
         this->_stock[name] = this->_settings.startNbIngredients;
 }
 
+void Kitchen::initCooks(void) {
+    std::shared_ptr<Cook> cook = nullptr;
+
+    this->_cooks.clear();
+    this->_cooks.reserve(this->_settings.nbCooks);
+    for (size_t id = 1 ; id < _settings.nbCooks + 1 ; id++) {
+        cook = std::make_shared<Cook>(Cook(id, getRandomName()));
+        _cooks.push_back(std::make_pair(cook, std::thread()));
+    }
+}
+
 /* ---------------------------- Member functions ---------------------------- */
 
 void Kitchen::run(void) {
     this->_isOpen = true;
     this->putCooksToWork();
-    resetTimepoint(this->_restockTimepoint);
-    resetTimepoint(this->_activeTimepoint);
-    this->addPizza(std::make_shared<Pizza>(Margarita, S));
+    resetTimepoint(this->_lastRestock);
+    resetTimepoint(this->_lastActive);
     while (this->_isOpen) {
         if (this->shouldRestock()) {
-            std::cout << "Time to restock !" << std::endl;
+            this->addPizza(std::make_shared<Pizza>(Regina, S));
+            this->addPizza(std::make_shared<Pizza>(Margarita, M));
+            this->addPizza(std::make_shared<Pizza>(Americana, XL));
+            this->addPizza(std::make_shared<Pizza>(Fantasia, XXL));
             this->restock();
-            this->addPizza(std::make_shared<Pizza>(Margarita, L));
-            resetTimepoint(this->_restockTimepoint);
+            resetTimepoint(this->_lastRestock);
         }
         if (this->shouldClose()) {
             std::cout << "Time to close!" << std::endl;
@@ -80,45 +93,42 @@ void Kitchen::run(void) {
     }
 }
 
+std::shared_ptr<Cook> Kitchen::getCook(const size_t id) {
+    for (auto &cook : _cooks)
+        if (cook.first->getID() == id)
+            return cook.first;
+    throw KitchenError("No cook with the id " + std::to_string(id));
+}
+
 void Kitchen::putCooksToWork(void) {
-    std::string name;
+    size_t id = 0;
 
     try {
-        for (size_t i = 0 ; i < _settings.nbCooks ; i++) {
-            name = getRandomName();
-            _cooks.push_back(std::thread(&Kitchen::cookWorker, this, name));
+        for (auto &cook : _cooks) {
+            id = cook.first->getID();
+            cook.second = std::thread(&Kitchen::cookWorker, this, id);
         }
     } catch (const std::system_error &err) {
         throw KitchenError(err.what());
     }
 }
 
-void Kitchen::cookWorker(const std::string &name) {
-    std::shared_ptr<Pizza> pizza = nullptr;
+void Kitchen::cookWorker(const size_t id) {
+    // TODO(julien): put cook directly in the argument ?
+    std::shared_ptr<Cook> cook = this->getCook(id);
 
-    // std::cout << "Hey i'm starting to work" << std::endl;
     while (this->_isOpen) {
         std::unique_lock<std::mutex> lock(_queueMutex);
-        if (!_pizzas.empty()) {
-            pizza = _pizzas.front();
-            _pizzas.pop();
+        if (!_pizzaQueue.empty()) {
+            cook->setPizza(_pizzaQueue.front());
+            _pizzaQueue.pop();
             lock.unlock();
-            std::cout << name << ": Hey i'm making the " << *pizza << std::endl;
-            std::this_thread::sleep_for(pizza->timeToBake * _settings.cookingMultiplier);
-            std::cout << name << ": Hey I finished the " << *pizza << std::endl;
+            cook->makePizza(_settings.cookingMultiplier);
         } else {
             lock.unlock();
             std::this_thread::yield();
         }
     }
-}
-
-bool Kitchen::shouldClose(void) const {
-    return getElapsedTime(this->_activeTimepoint) > _settings.inactiveTime;
-}
-
-bool Kitchen::shouldRestock(void) const {
-    return getElapsedTime(this->_restockTimepoint) > _settings.restockTime;
 }
 
 void Kitchen::restock(void) {
@@ -132,6 +142,24 @@ void Kitchen::useIngredient(const std::string &name) {
     if (_stock[name] > 0)
         _stock[name]--;
 }
+/* ---------------------------- Getters / Setters --------------------------- */
+
+bool Kitchen::shouldClose(void) const {
+    return getElapsedTime(this->_lastActive) > _settings.inactiveTime;
+}
+
+bool Kitchen::shouldRestock(void) const {
+    return getElapsedTime(this->_lastRestock) > _settings.restockTime;
+}
+
+void Kitchen::setSettings(const KitchenSettings &settings) {
+    bool resetCooks = (_settings.nbCooks != settings.nbCooks);
+
+    _settings = settings;
+    if (resetCooks)
+        this->initCooks();
+}
+
 }  // namespace plz
 
 /* -------------------------- Operator overloading -------------------------- */

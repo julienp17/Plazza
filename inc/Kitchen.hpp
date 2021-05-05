@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <queue>
 #include <vector>
+#include <utility>
 
 #include <atomic>
 #include <thread>
@@ -22,6 +23,7 @@
 
 #include "utils.hpp"
 #include "Pizza.hpp"
+#include "Cook.hpp"
 
 namespace plz {
 /**
@@ -101,7 +103,7 @@ class Kitchen {
      * @param pizza The pizza to be made
      */
     void addPizza(std::shared_ptr<Pizza> pizza) {
-        _pizzas.push(pizza);
+        _pizzaQueue.push(pizza);
     }
 
     /**
@@ -133,9 +135,7 @@ class Kitchen {
      *
      * @param settings The new settings for the kitchen
      */
-    void setSettings(const KitchenSettings &settings) {
-        _settings = settings;
-    }
+    void setSettings(const KitchenSettings &settings);
 
     /**
      * @brief Get the mapping of ingredients to their remaining stock
@@ -150,17 +150,26 @@ class Kitchen {
     /**
      * @brief Initialize the kitchen
      *
-     * This function is called by the constructors
+     * This function is called by the constructors.
+     * This function calls the other initialization functions.
      */
     void init(void);
 
     /**
-     * @brief Initialize the kitchen stock
+     * @brief Initialize the kitchen's stock
      *
      * Puts N number of each ingredient in the stock, with N being the number
      * specified in settings.startNbIngredients
      */
     void initStock(void);
+
+    /**
+     * @brief Initiliaze the kitchen's cooks
+     *
+     * Creates N number of cooks with an increasing ID and random name, with N
+     * being the number specified in settings.nbCooks
+     */
+    void initCooks(void);
 
     /**
      * @brief Checks if the kitchen should restock
@@ -188,9 +197,17 @@ class Kitchen {
      * Checks if a pizza is ready to be made from the queue. If it is, sleep
      * for the amount of time the pizza needs to be baked, else yield.
      *
-     * @param settings The name of the cook
+     * @param settings The id of the cook
      */
-    void cookWorker(const std::string &name = "Cook");
+    void cookWorker(const size_t id);
+
+    /**
+     * @brief Returns the cook specified by id
+     *
+     * @param id The id of the cook
+     * @return std::shared_ptr<Cook> A shared pointer to the cook
+     */
+    std::shared_ptr<Cook> getCook(const size_t id);
 
     /**
      * @brief Checks if the kitchen is currently active
@@ -202,10 +219,10 @@ class Kitchen {
     std::atomic<bool> _isOpen;
 
     //* The cooks of the kitchen, represented by threads
-    std::vector<std::thread> _cooks;
+    std::vector<std::pair<std::shared_ptr<Cook>, std::thread>> _cooks;
 
     //* The queue of pizzas to be made
-    std::queue<std::shared_ptr<Pizza>> _pizzas;
+    std::queue<std::shared_ptr<Pizza>> _pizzaQueue;
 
     //* Mapping of ingredients to their remaining stock
     std::unordered_map<std::string, size_t> _stock;
@@ -217,10 +234,10 @@ class Kitchen {
     std::mutex _stockMutex;
 
     //* Timepoint to the last time the kitchen restocked
-    std::chrono::time_point<std::chrono::steady_clock> _restockTimepoint;
+    std::chrono::time_point<std::chrono::steady_clock> _lastRestock;
 
     //* The timepoint at where the kitchen was last active
-    std::chrono::time_point<std::chrono::steady_clock> _activeTimepoint;
+    std::chrono::time_point<std::chrono::steady_clock> _lastActive;
 
     //* The settings of the kitchen
     KitchenSettings _settings;
