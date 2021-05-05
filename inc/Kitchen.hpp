@@ -22,50 +22,13 @@
 #include <mutex>
 
 #include "utils.hpp"
+#include "KitchenSettings.hpp"
 #include "Pizza.hpp"
 #include "Cook.hpp"
 
+std::ostream &operator<<(std::ostream &out, const plz::Cook &cook);
+
 namespace plz {
-/**
- * @brief Settings for a kitchen
- */
-struct KitchenSettings {
-    /**
-     * @brief Construct a new Kitchen Settings object with default values
-     */
-    KitchenSettings(void);
-
-    /**
-     * @brief Multiplier for the cooking time of the pizzas
-     */
-    float cookingMultiplier;
-
-    /**
-     * @brief Number of cooks in the kitchen
-     */
-    size_t nbCooks;
-
-    /**
-     * @brief The starting stock of each ingredient
-     */
-    size_t startNbIngredients;
-
-    /**
-     * @brief Time for a kitchen stock to replace ingredients
-     */
-    std::chrono::milliseconds restockTime;
-
-    /**
-     * @brief Maximum time for a kitchen to be inactive before it closes
-     */
-    std::chrono::milliseconds inactiveTime;
-
-    /**
-     * @brief The number to restock for each ingredient
-     */
-    size_t restockNb;
-};
-
 /**
  * @brief Produces pizzas for the reception made by concurrent cooks
  */
@@ -115,11 +78,17 @@ class Kitchen {
     void restock(void);
 
     /**
-     * @brief Consume an ingredient from the stock
-     *
-     * @param name The ingredient's name
+     * @brief Get the cooks of the kitchen
+     * 
+     * @return A vector of shared pointers to the cooks
      */
-    void useIngredient(const std::string &name);
+    std::vector<std::shared_ptr<Cook>> getCooks(void) const {
+        std::vector<std::shared_ptr<Cook>> cooks;
+
+        for (auto &pair : _cooks)
+            cooks.push_back(pair.first);
+        return cooks;
+    }
 
     /**
      * @brief Get the kitchen's settings
@@ -145,6 +114,16 @@ class Kitchen {
     inline const std::unordered_map<std::string, size_t> &getStock(void) const {
         return _stock;
     }
+
+    /**
+     * @brief Overloading the stream operator for printing a kitchen
+     * 
+     * @param out The stream to output to
+     * @param kitchen The kitchen to print
+     * @return std::ostream& The modified stream
+     */
+    // friend std::ostream &operator<<(std::ostream &out,
+    //                                 const plz::Kitchen &kitchen);
 
  private:
     /**
@@ -187,6 +166,35 @@ class Kitchen {
     bool shouldClose(void) const;
 
     /**
+     * @brief Checks whether the kitchen can add a pizza to its queue.
+     *
+     * The kitchen cannot accept more than 2 * N pizza, with N being the number
+     * of cooks.
+     *
+     * @return true if the kitchen has enough space
+     * @return false otherwise
+     */
+    // bool canAddPizza(void) const;
+
+    /**
+     * @brief Checks whether the kitchen can make the passed pizza
+     *
+     * The kitchen can only make the pizza if it has enough ingredients.
+     *
+     * @param pizza The pizza to make
+     * @return true if the kitchen has enough ingredients
+     * @return false otherwise
+     */
+    bool canMakePizza(const std::shared_ptr<Pizza> pizza);
+
+    /**
+     * @brief Consumes one piece of each ingredients from the stock
+     *
+     * @param ingredients The name of each ingredient to consume
+     */
+    void useIngredients(const std::vector<std::string> &ingredients);
+
+    /**
      * @brief Starts every cook's thread with the cookWorker member function
      */
     void putCooksToWork(void);
@@ -194,12 +202,14 @@ class Kitchen {
     /**
      * @brief Thread function for each cook
      *
-     * Checks if a pizza is ready to be made from the queue. If it is, sleep
-     * for the amount of time the pizza needs to be baked, else yield.
+     * Checks if a pizza is ready to be made from the queue.
+     * If it is, and there is enough ingredients, sleep for the amount of time
+     * the pizza needs to be baked.
+     * Else, yield.
      *
-     * @param settings The id of the cook
+     * @param settings The working cook for the thread
      */
-    void cookWorker(const size_t id);
+    void cookWorker(std::shared_ptr<Cook> cook);
 
     /**
      * @brief Returns the cook specified by id
@@ -232,6 +242,9 @@ class Kitchen {
 
     //* The mutex used for consumming stocks
     std::mutex _stockMutex;
+
+    //* The mutex used for printing to stdout
+    std::mutex _stdoutMutex;
 
     //* Timepoint to the last time the kitchen restocked
     std::chrono::time_point<std::chrono::steady_clock> _lastRestock;

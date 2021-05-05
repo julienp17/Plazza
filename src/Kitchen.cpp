@@ -6,22 +6,15 @@
 */
 
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include "plazza.hpp"
 #include "Kitchen.hpp"
 #include "Error.hpp"
 
+
 namespace plz {
 /* ----------------------- Constructors / Destructors ----------------------- */
-
-KitchenSettings::KitchenSettings(void) {
-    this->cookingMultiplier = 1.0f;
-    this->nbCooks = 5;
-    this->startNbIngredients = 5;
-    this->inactiveTime = std::chrono::milliseconds(5000);
-    this->restockTime = std::chrono::milliseconds(2000);
-    this->restockNb = 1;
-}
 
 Kitchen::Kitchen(void) {
     this->init();
@@ -79,10 +72,6 @@ void Kitchen::run(void) {
     resetTimepoint(this->_lastActive);
     while (this->_isOpen) {
         if (this->shouldRestock()) {
-            this->addPizza(std::make_shared<Pizza>(Regina, S));
-            this->addPizza(std::make_shared<Pizza>(Margarita, M));
-            this->addPizza(std::make_shared<Pizza>(Americana, XL));
-            this->addPizza(std::make_shared<Pizza>(Fantasia, XXL));
             this->restock();
             resetTimepoint(this->_lastRestock);
         }
@@ -93,37 +82,17 @@ void Kitchen::run(void) {
     }
 }
 
-std::shared_ptr<Cook> Kitchen::getCook(const size_t id) {
-    for (auto &cook : _cooks)
-        if (cook.first->getID() == id)
-            return cook.first;
-    throw KitchenError("No cook with the id " + std::to_string(id));
-}
-
-void Kitchen::putCooksToWork(void) {
-    size_t id = 0;
-
-    try {
-        for (auto &cook : _cooks) {
-            id = cook.first->getID();
-            cook.second = std::thread(&Kitchen::cookWorker, this, id);
-        }
-    } catch (const std::system_error &err) {
-        throw KitchenError(err.what());
-    }
-}
-
-void Kitchen::cookWorker(const size_t id) {
-    // TODO(julien): put cook directly in the argument ?
-    std::shared_ptr<Cook> cook = this->getCook(id);
+void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
+    std::shared_ptr<Pizza> pizza = nullptr;
 
     while (this->_isOpen) {
         std::unique_lock<std::mutex> lock(_queueMutex);
-        if (!_pizzaQueue.empty()) {
-            cook->setPizza(_pizzaQueue.front());
+        if (!_pizzaQueue.empty() && this->canMakePizza(_pizzaQueue.front())) {
+            pizza = _pizzaQueue.front();
             _pizzaQueue.pop();
             lock.unlock();
-            cook->makePizza(_settings.cookingMultiplier);
+            this->useIngredients(pizza->ingredients);
+            cook->makePizza(pizza, _settings.cookingMultiplier);
         } else {
             lock.unlock();
             std::this_thread::yield();
@@ -131,17 +100,40 @@ void Kitchen::cookWorker(const size_t id) {
     }
 }
 
+void Kitchen::putCooksToWork(void) {
+    try {
+        for (auto &cook : _cooks)
+            cook.second = std::thread(&Kitchen::cookWorker, this, cook.first);
+    } catch (const std::system_error &err) {
+        throw KitchenError(err.what());
+    }
+}
+
+std::shared_ptr<Cook> Kitchen::getCook(const size_t id) {
+    for (auto &cook : _cooks)
+        if (cook.first->getID() == id)
+            return cook.first;
+    throw KitchenError("No cook with the id " + std::to_string(id));
+}
+
 void Kitchen::restock(void) {
+    std::lock_guard<std::mutex> lock(_stockMutex);
+
     for (auto & [ name, remaining ] : this->_stock)
         remaining += _settings.restockNb;
 }
 
-void Kitchen::useIngredient(const std::string &name) {
-    if (_stock.find(name) == _stock.end())
-        throw KitchenError("Cannot decrement a stock to -1.");
-    if (_stock[name] > 0)
-        _stock[name]--;
+void Kitchen::useIngredients(const std::vector<std::string> &ingredients) {
+    std::lock_guard<std::mutex> lock(_stockMutex);
+
+    for (const std::string &name : ingredients) {
+        if (_stock.find(name) == _stock.end())
+            throw KitchenError("Ingredient " + name + " not found in stock.");
+        if (_stock[name] > 0)
+            _stock[name]--;
+    }
 }
+
 /* ---------------------------- Getters / Setters --------------------------- */
 
 bool Kitchen::shouldClose(void) const {
@@ -152,6 +144,19 @@ bool Kitchen::shouldRestock(void) const {
     return getElapsedTime(this->_lastRestock) > _settings.restockTime;
 }
 
+bool Kitchen::canMakePizza(const std::shared_ptr<Pizza> pizza) {
+    std::lock_guard<std::mutex> lock(_stockMutex);
+
+    for (const std::string &name : pizza->ingredients) {
+        auto it = _stock.find(name);
+        if (it == _stock.end())
+            throw KitchenError("Ingredient " + name + " not found in stock.");
+        if (it->second == 0)
+            return false;
+    }
+    return true;
+}
+
 void Kitchen::setSettings(const KitchenSettings &settings) {
     bool resetCooks = (_settings.nbCooks != settings.nbCooks);
 
@@ -159,15 +164,19 @@ void Kitchen::setSettings(const KitchenSettings &settings) {
     if (resetCooks)
         this->initCooks();
 }
-
 }  // namespace plz
 
 /* -------------------------- Operator overloading -------------------------- */
 
 std::ostream &operator<<(std::ostream &out, const plz::Kitchen &kitchen) {
     auto stock = kitchen.getStock();
+    auto cooks = kitchen.getCooks();
 
+    out << "Cooks:" << std::endl;
+    for (const auto &cook : cooks)
+        out << " - " << *cook << std::endl;
+    out << "Stock:" << std::endl;
     for (const auto & [ name, remaining ] : stock)
-        out << "    " << name << ": " << remaining << std::endl;
+        out << " - " << std::setw(11) << name << ": " << remaining << std::endl;
     return out;
 }
