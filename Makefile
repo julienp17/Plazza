@@ -16,7 +16,9 @@ SRC_D		=	src/
 SRC_F		=	utils.cpp \
 				Reception.cpp \
 				Pizza.cpp \
-				Kitchen.cpp
+				Cook.cpp \
+				Kitchen.cpp \
+				KitchenSettings.cpp \
 
 SRC_UT		=	$(addprefix $(SRC_UT_D), $(SRC_UT_F))
 OBJ_UT		=	$(SRC_UT:.cpp=.o)
