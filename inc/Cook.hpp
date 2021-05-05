@@ -50,32 +50,32 @@ class Cook {
     }
 
     /**
+     * @brief Get the pizza that the cook is working on
+     *
+     * @return std::shared_ptr<Pizza> The pizza being worked on
+     */
+    inline std::shared_ptr<Pizza> getPizza(void) const {
+        return _pizza;
+    }
+
+    /**
      * @brief Checks whether the cook is currently working on a pizza.
      *
      * @return true if the cook is working on a pizza, false otherwise
      */
     inline bool isWorking(void) const {
-        return _pizza == nullptr;
-    }
-
-    /**
-     * @brief Sets the new pizza the cook should be working on
-     *
-     * @param pizza The new pizza to be worked on
-     */
-    void setPizza(std::shared_ptr<Pizza> pizza) {
-        _pizza = pizza;
+        return _pizza != nullptr;
     }
 
     /**
      * @brief Make a new pizza
      *
-     * @param multiplier The time multiplier for the baking time of the Pizzas
+     * @param pizza The order to make
+     * @param multiplier Multiplier of the baking time of the pizza
+     * @return std::shared_ptr<Pizza> The freshly made pizza
      */
-    void makePizza(const float multiplier) {
-        std::this_thread::sleep_for(_pizza->timeToBake * multiplier);
-        _pizza = nullptr;
-    }
+    std::shared_ptr<Pizza> makePizza(std::shared_ptr<Pizza> pizza,
+                                    const float multiplier);
 
  private:
     //* The id of the cook
@@ -89,5 +89,6 @@ class Cook {
 };
 }  // namespace plz
 
+std::ostream &operator<<(std::ostream &out, const plz::Cook &cook);
 
 #endif  // INC_COOK_HPP_
