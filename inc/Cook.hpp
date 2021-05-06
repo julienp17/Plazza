@@ -68,14 +68,22 @@ class Cook {
     }
 
     /**
+     * @brief Set the pizza that the cook is working on
+     *
+     * @param pizza Pizza that the cook is working on
+     */
+    void setPizza(std::shared_ptr<Pizza> pizza) {
+        _pizza = pizza;
+    }
+
+    /**
      * @brief Make a new pizza
      *
      * @param pizza The order to make
      * @param multiplier Multiplier of the baking time of the pizza
      * @return std::shared_ptr<Pizza> The freshly made pizza
      */
-    std::shared_ptr<Pizza> makePizza(std::shared_ptr<Pizza> pizza,
-                                    const float multiplier);
+    std::shared_ptr<Pizza> makePizza(const float multiplier);
 
  private:
     //* The id of the cook

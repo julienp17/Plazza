@@ -8,9 +8,9 @@
 #include "Cook.hpp"
 
 namespace plz {
-std::shared_ptr<Pizza> Cook::makePizza(std::shared_ptr<Pizza> pizza,
-                                        const float multiplier) {
-    _pizza = pizza;
+std::shared_ptr<Pizza> Cook::makePizza(const float multiplier) {
+    std::shared_ptr<Pizza> pizza = _pizza;
+
     std::this_thread::sleep_for(pizza->timeToBake * multiplier);
     _pizza = nullptr;
     return pizza;
