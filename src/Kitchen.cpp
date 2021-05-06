@@ -83,16 +83,14 @@ void Kitchen::run(void) {
 }
 
 void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
-    std::shared_ptr<Pizza> pizza = nullptr;
-
     while (this->_isOpen) {
         std::unique_lock<std::mutex> lock(_queueMutex);
         if (!_pizzaQueue.empty() && this->canMakePizza(_pizzaQueue.front())) {
-            pizza = _pizzaQueue.front();
+            cook->setPizza(_pizzaQueue.front());
             _pizzaQueue.pop();
             lock.unlock();
-            this->useIngredients(pizza->ingredients);
-            cook->makePizza(pizza, _settings.cookingMultiplier);
+            this->useIngredients(cook->getPizza()->ingredients);
+            cook->makePizza(_settings.cookingMultiplier);
         } else {
             lock.unlock();
             std::this_thread::yield();
@@ -102,18 +100,17 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
 
 void Kitchen::putCooksToWork(void) {
     try {
-        for (auto &cook : _cooks)
-            cook.second = std::thread(&Kitchen::cookWorker, this, cook.first);
+        for (auto &pair : _cooks)
+            pair.second = std::thread(&Kitchen::cookWorker, this, pair.first);
     } catch (const std::system_error &err) {
         throw KitchenError(err.what());
     }
 }
 
-std::shared_ptr<Cook> Kitchen::getCook(const size_t id) {
-    for (auto &cook : _cooks)
-        if (cook.first->getID() == id)
-            return cook.first;
-    throw KitchenError("No cook with the id " + std::to_string(id));
+void Kitchen::addPizza(std::shared_ptr<Pizza> pizza) {
+    std::lock_guard<std::mutex> lock(_queueMutex);
+
+    _pizzaQueue.push(pizza);
 }
 
 void Kitchen::restock(void) {
@@ -144,6 +141,23 @@ bool Kitchen::shouldRestock(void) const {
     return getElapsedTime(this->_lastRestock) > _settings.restockTime;
 }
 
+size_t Kitchen::getNbAvailableCooks(void) const {
+    size_t nbAvailableCooks = 0;
+
+    for (auto &pair : _cooks)
+        if (!pair.first->isWorking())
+            nbAvailableCooks++;
+    return nbAvailableCooks;
+}
+
+bool Kitchen::canAddPizzas(const size_t nbPizzas) {
+    std::lock_guard<std::mutex> lock(_queueMutex);
+    size_t slots = getNbAvailableCooks()
+                    + this->_settings.nbCooks - _pizzaQueue.size();
+
+    return nbPizzas <= slots;
+}
+
 bool Kitchen::canMakePizza(const std::shared_ptr<Pizza> pizza) {
     std::lock_guard<std::mutex> lock(_stockMutex);
 
@@ -155,6 +169,14 @@ bool Kitchen::canMakePizza(const std::shared_ptr<Pizza> pizza) {
             return false;
     }
     return true;
+}
+
+std::vector<std::shared_ptr<Cook>> Kitchen::getCooks(void) const {
+    std::vector<std::shared_ptr<Cook>> cooks;
+
+    for (auto &pair : _cooks)
+        cooks.push_back(pair.first);
+    return cooks;
 }
 
 void Kitchen::setSettings(const KitchenSettings &settings) {

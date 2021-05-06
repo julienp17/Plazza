@@ -65,9 +65,7 @@ class Kitchen {
      *
      * @param pizza The pizza to be made
      */
-    void addPizza(std::shared_ptr<Pizza> pizza) {
-        _pizzaQueue.push(pizza);
-    }
+    void addPizza(std::shared_ptr<Pizza> pizza);
 
     /**
      * @brief Restock the kitchen
@@ -82,13 +80,7 @@ class Kitchen {
      * 
      * @return A vector of shared pointers to the cooks
      */
-    std::vector<std::shared_ptr<Cook>> getCooks(void) const {
-        std::vector<std::shared_ptr<Cook>> cooks;
-
-        for (auto &pair : _cooks)
-            cooks.push_back(pair.first);
-        return cooks;
-    }
+    std::vector<std::shared_ptr<Cook>> getCooks(void) const;
 
     /**
      * @brief Get the kitchen's settings
@@ -114,16 +106,6 @@ class Kitchen {
     inline const std::unordered_map<std::string, size_t> &getStock(void) const {
         return _stock;
     }
-
-    /**
-     * @brief Overloading the stream operator for printing a kitchen
-     * 
-     * @param out The stream to output to
-     * @param kitchen The kitchen to print
-     * @return std::ostream& The modified stream
-     */
-    // friend std::ostream &operator<<(std::ostream &out,
-    //                                 const plz::Kitchen &kitchen);
 
  private:
     /**
@@ -166,6 +148,11 @@ class Kitchen {
     bool shouldClose(void) const;
 
     /**
+     * @brief Gets the number of available cooks
+     */
+    size_t getNbAvailableCooks(void) const;
+
+    /**
      * @brief Checks whether the kitchen can add a pizza to its queue.
      *
      * The kitchen cannot accept more than 2 * N pizza, with N being the number
@@ -174,7 +161,18 @@ class Kitchen {
      * @return true if the kitchen has enough space
      * @return false otherwise
      */
-    // bool canAddPizza(void) const;
+
+    /**
+     * @brief Checks whether the kitchen can add a pizza to its queue.
+     *
+     * The kitchen cannot accept more than 2 * N pizza, with N being the number
+     * of cooks.
+     *
+     * @param nbPizzas The requested number of pizzas to add
+     * @return true if the kitchen can accept the pizzas
+     * @return false otherwise
+     */
+    bool canAddPizzas(const size_t nbPizzas);
 
     /**
      * @brief Checks whether the kitchen can make the passed pizza
@@ -210,14 +208,6 @@ class Kitchen {
      * @param settings The working cook for the thread
      */
     void cookWorker(std::shared_ptr<Cook> cook);
-
-    /**
-     * @brief Returns the cook specified by id
-     *
-     * @param id The id of the cook
-     * @return std::shared_ptr<Cook> A shared pointer to the cook
-     */
-    std::shared_ptr<Cook> getCook(const size_t id);
 
     /**
      * @brief Checks if the kitchen is currently active
