@@ -76,6 +76,29 @@ class Kitchen {
     void restock(void);
 
     /**
+     * @brief Checks whether the kitchen can add a pizza to its queue.
+     *
+     * The kitchen cannot accept more than 2 * N pizza, with N being the number
+     * of cooks.
+     *
+     * @param nbPizzas The requested number of pizzas to add
+     * @return true if the kitchen can accept the pizzas
+     * @return false otherwise
+     */
+    bool canAddPizzas(const size_t nbPizzas);
+
+    /**
+     * @brief Checks whether the kitchen can make the passed pizza
+     *
+     * The kitchen can only make the pizza if it has enough ingredients.
+     *
+     * @param pizza The pizza to make
+     * @return true if the kitchen has enough ingredients
+     * @return false otherwise
+     */
+    bool canMakePizza(const std::shared_ptr<Pizza> pizza);
+
+    /**
      * @brief Get the cooks of the kitchen
      * 
      * @return A vector of shared pointers to the cooks
@@ -151,39 +174,6 @@ class Kitchen {
      * @brief Gets the number of available cooks
      */
     size_t getNbAvailableCooks(void) const;
-
-    /**
-     * @brief Checks whether the kitchen can add a pizza to its queue.
-     *
-     * The kitchen cannot accept more than 2 * N pizza, with N being the number
-     * of cooks.
-     *
-     * @return true if the kitchen has enough space
-     * @return false otherwise
-     */
-
-    /**
-     * @brief Checks whether the kitchen can add a pizza to its queue.
-     *
-     * The kitchen cannot accept more than 2 * N pizza, with N being the number
-     * of cooks.
-     *
-     * @param nbPizzas The requested number of pizzas to add
-     * @return true if the kitchen can accept the pizzas
-     * @return false otherwise
-     */
-    bool canAddPizzas(const size_t nbPizzas);
-
-    /**
-     * @brief Checks whether the kitchen can make the passed pizza
-     *
-     * The kitchen can only make the pizza if it has enough ingredients.
-     *
-     * @param pizza The pizza to make
-     * @return true if the kitchen has enough ingredients
-     * @return false otherwise
-     */
-    bool canMakePizza(const std::shared_ptr<Pizza> pizza);
 
     /**
      * @brief Consumes one piece of each ingredients from the stock
