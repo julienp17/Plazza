@@ -73,6 +73,8 @@ void Kitchen::run(void) {
             this->restock();
             resetTimepoint(this->_lastRestock);
         }
+        if (this->isActive())
+            resetTimepoint(this->_lastActive);
         if (this->shouldClose()) {
             std::cout << "Time to close!" << std::endl;
             this->_isOpen = false;
@@ -109,6 +111,7 @@ void Kitchen::addPizza(std::shared_ptr<Pizza> pizza) {
     std::lock_guard<std::mutex> lock(_queueMutex);
 
     _pizzaQueue.push(pizza);
+    resetTimepoint(this->_lastActive);
 }
 
 void Kitchen::restock(void) {
@@ -139,13 +142,11 @@ bool Kitchen::shouldRestock(void) const {
     return getElapsedTime(this->_lastRestock) > _settings.restockTime;
 }
 
-size_t Kitchen::getNbAvailableCooks(void) const {
-    size_t nbAvailableCooks = 0;
-
+bool Kitchen::isActive(void) const {
     for (auto &pair : _cooks)
-        if (!pair.first->isWorking())
-            nbAvailableCooks++;
-    return nbAvailableCooks;
+        if (pair.first->isWorking())
+            return true;
+    return false;
 }
 
 bool Kitchen::canAddPizzas(const size_t nbPizzas) {
@@ -175,6 +176,15 @@ std::vector<std::shared_ptr<Cook>> Kitchen::getCooks(void) const {
     for (auto &pair : _cooks)
         cooks.push_back(pair.first);
     return cooks;
+}
+
+size_t Kitchen::getNbAvailableCooks(void) const {
+    size_t nbAvailableCooks = 0;
+
+    for (auto &pair : _cooks)
+        if (!pair.first->isWorking())
+            nbAvailableCooks++;
+    return nbAvailableCooks;
 }
 
 void Kitchen::setSettings(const KitchenSettings &settings) {

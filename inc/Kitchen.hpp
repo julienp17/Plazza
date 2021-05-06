@@ -156,6 +156,17 @@ class Kitchen {
     void initCooks(void);
 
     /**
+     * @brief Checks if the kitchen is active.
+     *
+     * A kitchen is considered active if it got an order or a cook is making
+     * a pizza.
+     *
+     * @return true if the kitchen is active
+     * @return false otherwise
+     */
+    bool isActive(void) const;
+
+    /**
      * @brief Checks if the kitchen should restock
      *
      * @return true if its time to restock, false otherwise
