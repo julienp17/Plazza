@@ -75,10 +75,8 @@ void Kitchen::run(void) {
         }
         if (this->isActive())
             resetTimepoint(this->_lastActive);
-        if (this->shouldClose()) {
-            std::cout << "Time to close!" << std::endl;
+        if (this->shouldClose())
             this->_isOpen = false;
-        }
     }
 }
 
@@ -97,6 +95,7 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
         }
     }
 }
+
 
 void Kitchen::putCooksToWork(void) {
     try {
