@@ -105,12 +105,12 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
             this->useIngredients(pizza->ingredients);
             cook->makePizza(_settings.cookingMultiplier);
             FILE_LOG(linfo) << cook->getName() << " finished making " << *pizza;
-            pizzaStr << *pizza;
             {
                 std::lock_guard<std::mutex> lk(_msgQueueMutex);
-                if (this->_msgQueue != nullptr) {
+                pizzaStr << *pizza;
+                if (this->_msgQueue != nullptr)
                     this->_msgQueue->send(PIZZA, pizzaStr.str());
-                }
+                std::this_thread::sleep_for(5ms);
             }
             FILE_LOG(linfo) << cook->getName() << " sent " << *pizza;
         } else {
