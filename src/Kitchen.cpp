@@ -68,8 +68,6 @@ void Kitchen::initCooks(void) {
 void Kitchen::run(void) {
     this->_isOpen = true;
     this->putCooksToWork();
-    resetTimepoint(this->_lastRestock);
-    resetTimepoint(this->_lastActive);
     while (this->_isOpen) {
         if (this->shouldRestock()) {
             this->restock();
