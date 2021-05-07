@@ -14,14 +14,13 @@
 #include "plazza.hpp"
 #include "Pizza.hpp"
 #include "Kitchen.hpp"
+#include "MessageQueue.hpp"
 
 namespace plz {
 class Reception {
  public:
     Reception(void) {}
     virtual ~Reception(void) {}
-
-    using PizzaQueue_t = std::queue<std::shared_ptr<Pizza>>;
 
     /**
      * @brief Add pizzas to the queue
@@ -42,21 +41,38 @@ class Reception {
     bool placeOrder(const std::string &order);
 
     /**
-     * @brief Set the Kitchen Settings object
-     * 
-     * @param settings The new kitchen settings
+     * @brief Forks a new process holding a kitchen
+     *
+     * The reception and the newly created kitchen will then communicate
+     * using the message queue IPC.
      */
-    void setKitchenSettings(const KitchenSettings &kitchenSettings) {
-        _kitchenSettings = kitchenSettings;
-    }
+    void createKitchen(void);
 
     /**
      * @brief Get the pizza queue
      *
-     * @return The pizza queue
+     * @return std::queue<std::shared_ptr<Pizza>> The pizza queue
      */
-    inline const PizzaQueue_t &getPizzaQueue(void) const {
+    inline const std::queue<std::shared_ptr<Pizza>> &getPizzaQueue(void) const {
         return _pizzas;
+    }
+
+    /**
+     * @brief Get the Kitchen Settings object
+     *
+     * @return KitchenSettings The settings of the created kitchens
+     */
+    inline KitchenSettings getKitchenSettings(void) const {
+        return _kitchenSettings;
+    }
+
+    /**
+     * @brief Set the Kitchen Settings object
+     * 
+     * @param settings The new kitchen settings
+     */
+    inline void setKitchenSettings(const KitchenSettings &kitchenSettings) {
+        _kitchenSettings = kitchenSettings;
     }
 
  private:
@@ -73,10 +89,13 @@ class Reception {
      */
     KitchenSettings _kitchenSettings;
 
+    //* Mapping of kitchen PIDs to their message queue
+    std::unordered_map<pid_t, MessageQueue> _msgQueues;
+
     /**
      * @brief The queue of pizzas to be made
      */
-    PizzaQueue_t _pizzas;
+    std::queue<std::shared_ptr<Pizza>> _pizzas;
 };
 }  // namespace plz
 

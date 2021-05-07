@@ -6,11 +6,16 @@
 */
 
 #include <iostream>
+#include <unistd.h>
 #include "Reception.hpp"
 #include "Error.hpp"
 #include "utils.hpp"
+#include <sys/wait.h>
 
 namespace plz {
+
+/* ---------------------------- Member functions ---------------------------- */
+
 void Reception::placeOrders(const std::string &orders_str) {
     VecStr_t orders;
 
@@ -34,6 +39,7 @@ bool Reception::placeOrder(const std::string &order) {
     for (size_t i = 0 ; i < nbPizzas ; i++)
         _pizzas.push(pizza);
     std::cout << "Order placed for " << nbPizzas << " " << *pizza << std::endl;
+    this->createKitchen();
     return true;
 }
 
@@ -57,5 +63,21 @@ bool Reception::orderIsCorrect(const VecStr_t &tokens) {
         return false;
     }
     return true;
+}
+
+void Reception::createKitchen(void) {
+    MessageQueue msgQueue(MAIN_FILE_PATH, _msgQueues.size());
+    std::string message = "Are you here ?";
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        throw ReceptionError();
+    } else if (pid == 0) {
+        plz::Kitchen kitchen(this->_kitchenSettings, msgQueue);
+        _exit(0);
+    }
+    _msgQueues[pid] = msgQueue;
+    waitpid(pid, NULL, 0);
+    std::cout << msgQueue.recv(1, MSG_NOERROR) << std::endl;
 }
 }  // namespace plz

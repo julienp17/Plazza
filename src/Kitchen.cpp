@@ -20,9 +20,11 @@ Kitchen::Kitchen(void) {
     this->init();
 }
 
-Kitchen::Kitchen(const KitchenSettings &settings) {
-    this->_settings = settings;
+Kitchen::Kitchen(const KitchenSettings &settings, const MessageQueue &msgQ) {
     this->init();
+    this->_settings = settings;
+    this->_msgQueue = msgQ;
+    this->_msgQueue.send(1, "Kitchen correctly created.");
 }
 
 Kitchen::~Kitchen(void) {

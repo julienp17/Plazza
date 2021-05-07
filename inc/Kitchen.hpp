@@ -22,11 +22,10 @@
 #include <mutex>
 
 #include "utils.hpp"
+#include "MessageQueue.hpp"
 #include "KitchenSettings.hpp"
 #include "Pizza.hpp"
 #include "Cook.hpp"
-
-std::ostream &operator<<(std::ostream &out, const plz::Cook &cook);
 
 namespace plz {
 /**
@@ -46,7 +45,7 @@ class Kitchen {
      *
      * @param settings The settings of the kitchen to create
      */
-    explicit Kitchen(const KitchenSettings &settings);
+    Kitchen(const KitchenSettings &settings, const MessageQueue &msgQ);
 
     /**
      * @brief Destroy the Kitchen object
@@ -234,14 +233,14 @@ class Kitchen {
     //* The mutex used for consumming stocks
     std::mutex _stockMutex;
 
-    //* The mutex used for printing to stdout
-    std::mutex _stdoutMutex;
-
     //* Timepoint to the last time the kitchen restocked
     std::chrono::time_point<std::chrono::steady_clock> _lastRestock;
 
     //* The timepoint at where the kitchen was last active
     std::chrono::time_point<std::chrono::steady_clock> _lastActive;
+
+    //* The message queue used to communicate with the Reception
+    MessageQueue _msgQueue;
 
     //* The settings of the kitchen
     KitchenSettings _settings;
