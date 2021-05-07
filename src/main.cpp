@@ -18,9 +18,9 @@ int main(int ac, char **av) {
     plz::Reception reception;
 
     if (ac == 2 && std::string(av[1]) == "-h")
-        exitUsage(std::cout, 0);
+        returnUsage(std::cout, 0);
     else if (!argsAreCorrect(ac, av))
-        exitUsage(std::cerr, MY_EXIT_FAILURE);
+        returnUsage(std::cerr, MY_EXIT_FAILURE);
     reception.setKitchenSettings(getSettings(av));
     runReception(reception);
     return 0;
