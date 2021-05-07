@@ -54,15 +54,16 @@ class MessageQueue {
     void send(long type, const std::string &str, int flags = IPC_NOWAIT);
 
     /**
-     * @brief Receive a message from the queue.
+     * @brief Receive a message from the queue (blocking by default).
      *
+     * Set the flag to IPC_NOWAIT if you wish for the queue to be non-blocking.
      * The behavior is FIFO, so you get the first message sent from the type.
      *
      * @param type The type of message to receive.
      * @param flags Message flags, refer to 'man 2 msgsnd'
      * @return std::string The received message
      */
-    std::string recv(long type, int flags = MSG_NOERROR | IPC_NOWAIT);
+    std::string recv(long type, int flags = MSG_NOERROR);
 
     qid_t getId(void) const {
         return _qid;
