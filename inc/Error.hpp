@@ -10,6 +10,7 @@
 
 #include <exception>
 #include <string>
+#include <string.h>
 
 namespace plz {
 /** @class Error
@@ -18,7 +19,7 @@ namespace plz {
 class Error : public std::exception {
  public:
     explicit Error(std::string const &message)
-        : _message(message) {}
+        : _message(std::string("plazza: ") + message) {}
 
     inline virtual const char* what() const noexcept {
         return _message.c_str();
@@ -28,12 +29,24 @@ class Error : public std::exception {
     std::string _message;
 };
 
+/** @class ReceptionError
+ * @brief Errors related to the reception
+ */
+class ReceptionError : public Error {
+ public:
+    ReceptionError(void)
+        : Error(std::string("reception: ") + strerror(errno)) {}
+    explicit ReceptionError(std::string const &message)
+        : Error(std::string("reception: ") + message) {}
+};
+
 /** @class KitchenError
  * @brief Errors related to kitchens
  */
 class KitchenError : public Error {
  public:
-    explicit KitchenError(std::string const &message) : Error(message) {}
+    explicit KitchenError(std::string const &message)
+        : Error(std::string("kitchen: ") + message) {}
 };
 
 /** @class PizzaError
@@ -41,7 +54,8 @@ class KitchenError : public Error {
  */
 class PizzaError : public Error {
  public:
-    explicit PizzaError(std::string const &message) : Error(message) {}
+    explicit PizzaError(std::string const &message)
+        : Error(std::string("pizza: ") + message) {}
 };
 }  // namespace plz
 
