@@ -10,11 +10,21 @@
 #include "Reception.hpp"
 #include "Error.hpp"
 #include "utils.hpp"
-#include <sys/wait.h>
 
 namespace plz {
 
 /* ---------------------------- Member functions ---------------------------- */
+
+void Reception::run(void) {
+    std::string commands;
+
+    std::cout << "Welcome to Plazza! The Pizzeria for everyone!" << std::endl;
+    while (std::cin) {
+        std::cout << "Place your order here: ";
+        getline(std::cin, commands);
+        this->placeOrders(commands);
+    }
+}
 
 void Reception::placeOrders(const std::string &orders_str) {
     VecStr_t orders;
@@ -37,10 +47,30 @@ bool Reception::placeOrder(const std::string &order) {
                                     getPizzaSize(tokens[1]));
     nbPizzas = getNumber<size_t>(tokens[2].substr(1));
     for (size_t i = 0 ; i < nbPizzas ; i++)
-        _pizzas.push(pizza);
-    std::cout << "Order placed for " << nbPizzas << " " << *pizza << std::endl;
-    this->createKitchen();
+        this->delegateOrder(pizza);
     return true;
+}
+
+void Reception::delegateOrder(std::shared_ptr<Pizza> pizza) {
+    std::string orderStr = getPizzaType(pizza->type) + " "
+                            + getPizzaSize(pizza->size);
+    std::string response = "Refused";
+    pid_t pid = 0;
+
+    if (this->_msgQueues.size() == 0)
+        this->createKitchen();
+    for (auto &[pid, msgQueue] : this->_msgQueues) {
+        msgQueue->send(ORDER, orderStr);
+        response = msgQueue->recv(ORDER);
+        if (response == "Accepted") {
+            std::cout << "Order placed for " << *pizza << "." << std::endl;
+            break;
+        }
+    }
+    if (response == "Refused") {
+        pid = this->createKitchen();
+        this->_msgQueues[pid]->send(5, orderStr);
+    }
 }
 
 bool Reception::orderIsCorrect(const VecStr_t &tokens) {
@@ -65,19 +95,25 @@ bool Reception::orderIsCorrect(const VecStr_t &tokens) {
     return true;
 }
 
-void Reception::createKitchen(void) {
-    MessageQueue msgQueue(MAIN_FILE_PATH, _msgQueues.size());
-    std::string message = "Are you here ?";
+pid_t Reception::createKitchen(void) {
+    auto msgQueue = std::make_shared<MessageQueue>(
+        MAIN_FILE_PATH, _msgQueues.size());
     pid_t pid = fork();
+    std::string message;
 
     if (pid == -1) {
         throw ReceptionError();
     } else if (pid == 0) {
         plz::Kitchen kitchen(this->_kitchenSettings, msgQueue);
+        kitchen.run();
         _exit(0);
     }
     _msgQueues[pid] = msgQueue;
-    waitpid(pid, NULL, 0);
-    std::cout << msgQueue.recv(1, MSG_NOERROR) << std::endl;
+    std::this_thread::sleep_for(50ms);
+    if (msgQueue->recv(CONNECTION) == "Connected")
+        std::cerr << "Created new kitchen." << std::endl;
+    else
+        std::cerr << "Failed to create new kitchen." << std::endl;
+    return pid;
 }
 }  // namespace plz

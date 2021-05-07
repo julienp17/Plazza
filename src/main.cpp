@@ -12,7 +12,6 @@
 
 static bool argsAreCorrect(int ac, char **av);
 plz::KitchenSettings getSettings(char **av);
-static void runReception(plz::Reception &reception);
 
 int main(int ac, char **av) {
     plz::Reception reception;
@@ -22,7 +21,7 @@ int main(int ac, char **av) {
     else if (!argsAreCorrect(ac, av))
         returnUsage(std::cerr, MY_EXIT_FAILURE);
     reception.setKitchenSettings(getSettings(av));
-    runReception(reception);
+    reception.run();
     return 0;
 }
 
@@ -41,15 +40,4 @@ plz::KitchenSettings getSettings(char **av) {
     settings.nbCooks = getNumber<size_t>(av[2]);
     settings.restockTime = std::chrono::milliseconds(getNumber<size_t>(av[3]));
     return settings;
-}
-
-static void runReception(plz::Reception &reception) {
-    std::string orders;
-
-    std::cout << "Welcome to Plazza! The Pizzeria for everyone!" << std::endl;
-    while (std::cin) {
-        std::cout << "Place your order here: ";
-        getline(std::cin, orders);
-        reception.placeOrders(orders);
-    }
 }

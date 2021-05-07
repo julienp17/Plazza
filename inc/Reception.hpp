@@ -19,8 +19,20 @@
 namespace plz {
 class Reception {
  public:
+    /**
+     * @brief Construct a new Reception object
+     */
     Reception(void) {}
+
+    /**
+     * @brief Destroy the Reception object
+     */
     virtual ~Reception(void) {}
+
+    /**
+     * @brief Main loop of the reception
+     */
+    void run(void);
 
     /**
      * @brief Add pizzas to the queue
@@ -41,12 +53,19 @@ class Reception {
     bool placeOrder(const std::string &order);
 
     /**
+     * @brief Delegate an order to a kitchen, creating one if none is available
+     */
+    void delegateOrder(std::shared_ptr<Pizza> pizza);
+
+    /**
      * @brief Forks a new process holding a kitchen
      *
      * The reception and the newly created kitchen will then communicate
      * using the message queue IPC.
+     *
+     * @return The pid of the new kitchen process
      */
-    void createKitchen(void);
+    pid_t createKitchen(void);
 
     /**
      * @brief Get the pizza queue
@@ -90,7 +109,7 @@ class Reception {
     KitchenSettings _kitchenSettings;
 
     //* Mapping of kitchen PIDs to their message queue
-    std::unordered_map<pid_t, MessageQueue> _msgQueues;
+    std::unordered_map<pid_t, std::shared_ptr<MessageQueue>> _msgQueues;
 
     /**
      * @brief The queue of pizzas to be made

@@ -20,11 +20,12 @@ Kitchen::Kitchen(void) {
     this->init();
 }
 
-Kitchen::Kitchen(const KitchenSettings &settings, const MessageQueue &msgQ) {
+Kitchen::Kitchen(const KitchenSettings &settings,
+                std::shared_ptr<MessageQueue> msgQ) {
     this->init();
     this->_settings = settings;
     this->_msgQueue = msgQ;
-    this->_msgQueue.send(1, "Kitchen correctly created.");
+    this->_msgQueue->send(CONNECTION, "Connected");
 }
 
 Kitchen::~Kitchen(void) {
@@ -71,6 +72,7 @@ void Kitchen::run(void) {
     this->_isOpen = true;
     this->putCooksToWork();
     while (this->_isOpen) {
+        this->handleReceived();
         if (this->shouldRestock()) {
             this->restock();
             resetTimepoint(this->_lastRestock);
@@ -80,6 +82,7 @@ void Kitchen::run(void) {
         if (this->shouldClose())
             this->_isOpen = false;
     }
+    _msgQueue->send(CONNECTION, "Closing");
 }
 
 void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
@@ -90,14 +93,14 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
             _pizzaQueue.pop();
             lock.unlock();
             this->useIngredients(cook->getPizza()->ingredients);
-            cook->makePizza(_settings.cookingMultiplier);
+            std::cout << "Finished " <<
+                *cook->makePizza(_settings.cookingMultiplier) << std::endl;
         } else {
             lock.unlock();
             std::this_thread::yield();
         }
     }
 }
-
 
 void Kitchen::putCooksToWork(void) {
     try {
@@ -133,6 +136,26 @@ void Kitchen::useIngredients(const std::vector<std::string> &ingredients) {
     }
 }
 
+void Kitchen::handleReceived(void) {
+    std::string message;
+
+    message = _msgQueue->recv(ORDER, MSG_NOERROR | IPC_NOWAIT);
+    if (!message.empty())
+        this->respondOrder(message);
+}
+
+void Kitchen::respondOrder(const std::string &message) {
+    std::vector<std::string> tokens = split(message, ' ');
+    auto pizza = std::make_shared<Pizza>(tokens[0], tokens[1]);
+
+    if (this->canAddPizzas(1)) {
+        _msgQueue->send(ORDER, "Accepted");
+        this->addPizza(pizza);
+    } else {
+        _msgQueue->send(ORDER, "Refused");
+    }
+}
+
 /* ---------------------------- Getters / Setters --------------------------- */
 
 bool Kitchen::shouldClose(void) const {
@@ -147,7 +170,7 @@ bool Kitchen::isActive(void) const {
     for (auto &pair : _cooks)
         if (pair.first->isWorking())
             return true;
-    return false;
+    return _pizzaQueue.empty() == false;
 }
 
 bool Kitchen::canAddPizzas(const size_t nbPizzas) {

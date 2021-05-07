@@ -26,4 +26,14 @@
 #define returnUsage(stream, exitCode) \
     do { stream << USAGE << std::endl; return exitCode; } while (0)
 
+using namespace std::literals::chrono_literals;
+
+namespace plz {
+enum MsgType : long {
+    CONNECTION = 1,
+    ORDER,
+    INFO
+};
+}  // namespace plz
+
 #endif  // INC_PLAZZA_HPP_

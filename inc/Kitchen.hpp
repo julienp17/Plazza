@@ -45,7 +45,7 @@ class Kitchen {
      *
      * @param settings The settings of the kitchen to create
      */
-    Kitchen(const KitchenSettings &settings, const MessageQueue &msgQ);
+    Kitchen(const KitchenSettings &settings, std::shared_ptr<MessageQueue>);
 
     /**
      * @brief Destroy the Kitchen object
@@ -193,6 +193,18 @@ class Kitchen {
     void useIngredients(const std::vector<std::string> &ingredients);
 
     /**
+     * @brief Checks if a command was received from the message queue, and
+     * calls the corresponding action
+     */
+    void handleReceived(void);
+
+    /**
+     * @brief Checks if the received order is possible to make, and send a
+     * response to the reception
+     */
+    void respondOrder(const std::string &message);
+
+    /**
      * @brief Starts every cook's thread with the cookWorker member function
      */
     void putCooksToWork(void);
@@ -240,7 +252,7 @@ class Kitchen {
     std::chrono::time_point<std::chrono::steady_clock> _lastActive;
 
     //* The message queue used to communicate with the Reception
-    MessageQueue _msgQueue;
+    std::shared_ptr<MessageQueue> _msgQueue;
 
     //* The settings of the kitchen
     KitchenSettings _settings;
