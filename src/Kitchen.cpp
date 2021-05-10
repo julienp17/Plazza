@@ -73,8 +73,7 @@ void Kitchen::run(void) {
     this->_isOpen = true;
     this->putCooksToWork();
     while (this->_isOpen) {
-        if (this->_msgQueue != nullptr)
-            this->handleReceived();
+        this->handleReceived();
         if (this->shouldRestock()) {
             this->restock();
             resetTimepoint(this->_lastRestock);
@@ -84,8 +83,11 @@ void Kitchen::run(void) {
         if (this->shouldClose())
             this->_isOpen = false;
     }
-    if (this->_msgQueue != nullptr)
-        _msgQueue->send(DISCONNECTION, "Disconnection");
+    {
+        std::lock_guard<std::mutex> lk(_msgQueueMutex);
+        if (this->_msgQueue != nullptr)
+            _msgQueue->send(DISCONNECTION, "Disconnection");
+    }
 }
 
 void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
@@ -102,10 +104,15 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
             FILE_LOG(linfo) << cook->getName() << " is handling " << *pizza;
             this->useIngredients(pizza->ingredients);
             cook->makePizza(_settings.cookingMultiplier);
-            pizzaStr << *pizza;
-            if (this->_msgQueue != nullptr)
-                this->_msgQueue->send(PIZZA, pizzaStr.str());
             FILE_LOG(linfo) << cook->getName() << " finished making " << *pizza;
+            pizzaStr << *pizza;
+            {
+                std::lock_guard<std::mutex> lk(_msgQueueMutex);
+                if (this->_msgQueue != nullptr) {
+                    this->_msgQueue->send(PIZZA, pizzaStr.str());
+                    FILE_LOG(linfo) << cook->getName() << " sent " << *pizza;
+                }
+            }
         } else {
             lock.unlock();
             std::this_thread::yield();
@@ -148,8 +155,11 @@ void Kitchen::useIngredients(const std::vector<std::string> &ingredients) {
 }
 
 void Kitchen::handleReceived(void) {
+    std::lock_guard<std::mutex> lk(_msgQueueMutex);
     std::string message;
 
+    if (this->_msgQueue == nullptr)
+        return;
     message = _msgQueue->recv(ASK_ORDER, MSG_NOERROR | IPC_NOWAIT);
     if (!message.empty())
         this->respondOrder(message);

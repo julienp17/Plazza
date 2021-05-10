@@ -1,22 +1,38 @@
-16:09:38.223 INFO: Restaurant is open.
-16:09:41.261 INFO: Received command : [regina s x1]
-16:09:41.312 INFO: Kitchen 21993 opened.
-16:09:41.312 INFO: Order [Regina S] sent to kitchen 21993
-16:09:41.312 INFO: Andrea is handling Regina S
-16:09:43.087 INFO: Received command : [status]
-16:09:43.312 INFO: Andrea finished making Regina S
-16:09:47.250 INFO: Received command : [regina s x2]
-16:09:47.250 INFO: Regina S delivered.
-16:09:47.250 INFO: Li is handling Regina S
-16:09:47.251 INFO: Order [Regina S] sent to kitchen 21993
-16:09:47.251 INFO: Andrea is handling Regina S
-16:09:47.251 INFO: Order [Regina S] sent to kitchen 21993
-16:09:49.251 INFO: Li finished making Regina S
-16:09:49.251 INFO: Andrea finished making Regina S
-16:09:49.904 INFO: Received command : [status]
-16:09:49.904 INFO: Regina S delivered.
-16:09:54.736 INFO: Received command : [status]
-16:09:54.736 INFO: Regina SRegina S delivered.
-16:09:54.736 INFO: Kitchen 21993 closed.
-16:10:01.984 INFO: Received command : [exit]
-16:10:01.984 INFO: Restaurant is closed.
+17:35:20.337 INFO: Restaurant is open.
+17:35:23.451 INFO: Received command : [regina s x5]
+17:35:23.502 INFO: Kitchen 30423 opened.
+17:35:23.502 INFO: Order [Regina S] sent to kitchen 30423
+17:35:23.502 INFO: Order [Regina S] sent to kitchen 30423
+17:35:23.502 INFO: Mohamed is handling Regina S
+17:35:23.502 INFO: Order [Regina S] sent to kitchen 30423
+17:35:23.502 INFO: Order [Regina S] sent to kitchen 30423
+17:35:23.503 INFO: Cyril is handling Regina S
+17:35:23.552 INFO: Kitchen 30426 opened.
+17:35:23.556 INFO: Order [Regina S] sent to kitchen 30426
+17:35:23.558 INFO: Mohamed is handling Regina S
+17:35:25.502 INFO: Mohamed finished making Regina S
+17:35:25.502 INFO: Mohamed sent Regina S
+17:35:25.502 INFO: Mohamed is handling Regina S
+17:35:25.503 INFO: Cyril finished making Regina S
+17:35:25.507 INFO: Cyril sent Regina S
+17:35:25.507 INFO: Cyril is handling Regina S
+17:35:25.558 INFO: Mohamed finished making Regina S
+17:35:25.558 INFO: Mohamed sent Regina S
+17:35:27.503 INFO: Mohamed finished making Regina S
+17:35:27.504 INFO: Mohamed sent Regina S
+17:35:27.508 INFO: Cyril finished making Regina S
+17:35:27.508 INFO: Cyril sent Regina S
+17:35:35.654 INFO: Received command : [ge]
+17:35:35.654 INFO: Regina S delivered.
+17:35:35.654 INFO: Regina S delivered.
+17:35:35.654 INFO: Regina S delivered.
+17:35:35.654 INFO: Regina SRegina S delivered.
+17:35:35.654 INFO: Regina SRegina S delivered.
+17:35:35.654 INFO: Kitchen 30426 closed.
+17:35:35.655 INFO: Kitchen 30423 closed.
+17:35:35.655 DEBUG: Pizza ordering must be: TYPE SIZE NUMBER.
+17:36:21.411 INFO: Received command : [g]
+17:36:21.411 DEBUG: Pizza ordering must be: TYPE SIZE NUMBER.
+17:36:23.942 INFO: Received command : [status]
+17:36:25.243 INFO: Received command : [exit]
+17:36:25.243 INFO: Restaurant is closed.

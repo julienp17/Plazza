@@ -113,14 +113,13 @@ class Reception {
      */
     bool orderIsCorrect(const VecStr_t &tokens);
 
-    /**
-     * @brief Checks the messages received by kitchens, and act accordingly
-     */
+    //* Checks the messages received by kitchens, and act accordingly
     void handleReceived(void);
 
-    /**
-     * @brief Settings for the kitchens of the reception
-     */
+    //* Checks if a kitchen closed, and act accordingly
+    void handleDisconnections(void);
+
+    //* Settings for the kitchens of the reception
     KitchenSettings _kitchenSettings;
 
     //* Mapping of kitchen PIDs to their message queue

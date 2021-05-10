@@ -20,7 +20,7 @@ MessageQueue::MessageQueue(const char *pathname, int proj_id) {
         throw std::runtime_error(strerror(errno));
 }
 
-MessageQueue::~MessageQueue(void) {
+void MessageQueue::close(void) {
     if (_qid != -1)
         msgctl(_qid, IPC_RMID, NULL);
 }
@@ -44,10 +44,4 @@ std::string MessageQueue::recv(long type, int flags) {
         return std::string();
     }
     return std::string(msg.mtext);
-}
-
-void MessageQueue::setId(qid_t qid) {
-    if (this->_qid != -1)
-        msgctl(_qid, IPC_RMID, NULL);
-    this->_qid = qid;
 }

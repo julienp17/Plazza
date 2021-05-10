@@ -250,6 +250,9 @@ class Kitchen {
     //* The mutex used for consumming stocks
     std::mutex _stockMutex;
 
+    //* The mutex used for accessing the messageQueue
+    std::mutex _msgQueueMutex;
+
     //* Timepoint to the last time the kitchen restocked
     std::chrono::time_point<std::chrono::steady_clock> _lastRestock;
 

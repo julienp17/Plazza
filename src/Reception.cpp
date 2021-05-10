@@ -38,8 +38,10 @@ Reception::Reception(void) {
 }
 
 Reception::~Reception(void) {
-    for (auto &[pid, _] : this->_msgQueues)
+    for (auto &[pid, msgQueue] : this->_msgQueues) {
+        msgQueue->close();
         waitpid(pid, NULL, 0);
+    }
     endLogger();
 }
 
@@ -67,6 +69,7 @@ void Reception::doCommands(const std::string &commands_str) {
     for (const std::string &command : commands) {
         FILE_LOG(linfo) << "Received command : [" << command << "]";
         this->handleReceived();
+        this->handleDisconnections();
         if (strcasecmp(command.c_str(), "status") == 0)
             this->printStatus();
         else if (strcasecmp(command.c_str(), "exit") == 0)
@@ -105,11 +108,9 @@ bool Reception::placeOrder(const std::string &order) {
 void Reception::delegateOrder(std::shared_ptr<Pizza> pizza) {
     std::string orderStr = getPizzaType(pizza->type) + " "
                             + getPizzaSize(pizza->size);
-    std::string response;
-    pid_t pid = 0;
+    std::string response = "Refused";
+    pid_t newPid = 0;
 
-    if (this->_msgQueues.size() == 0)
-        this->createKitchen();
     for (auto &[pid, msgQueue] : this->_msgQueues) {
         msgQueue->send(ASK_ORDER, orderStr);
         response = msgQueue->recv(ORDER);
@@ -120,13 +121,15 @@ void Reception::delegateOrder(std::shared_ptr<Pizza> pizza) {
         }
     }
     if (response == "Refused") {
-        pid = this->createKitchen();
-        this->_msgQueues[pid]->send(ASK_ORDER, orderStr);
-        response = this->_msgQueues[pid]->recv(ORDER);
-        if (response == "Accepted")
+        newPid = this->createKitchen();
+        this->_msgQueues[newPid]->send(ASK_ORDER, orderStr);
+        response = this->_msgQueues[newPid]->recv(ORDER);
+        if (response == "Accepted") {
             std::cout << "Order placed for " << *pizza << "." << std::endl;
-        else
+            FILE_LOG(linfo) << "Order [" << *pizza << "] sent to kitchen " << newPid;
+        } else {
             std::cout << "Failed to place " << *pizza << "." << std::endl;
+        }
     }
 }
 
@@ -153,25 +156,36 @@ bool Reception::orderIsCorrect(const VecStr_t &tokens) {
 }
 
 void Reception::handleReceived(void) {
+    std::string message = "hey";
+
+    for (auto &[pid, msgQueue] : this->_msgQueues) {
+        while (!message.empty()) {
+            message = msgQueue->recv(PIZZA, MSG_NOERROR | IPC_NOWAIT);
+            if (!message.empty()) {
+                std::cout << "Finished making " << message << "." << std::endl;
+                FILE_LOG(linfo) << message << " delivered.";
+            }
+        }
+        message = "hey";
+    }
+}
+
+void Reception::handleDisconnections(void) {
     std::string message;
     bool disconnected = false;
 
     for (auto &[pid, msgQueue] : this->_msgQueues) {
-        message = msgQueue->recv(PIZZA, MSG_NOERROR | IPC_NOWAIT);
-        if (!message.empty()) {
-            std::cout << "Finished making " << message << "." << std::endl;
-            FILE_LOG(linfo) << message << " delivered.";
-        }
         message = msgQueue->recv(DISCONNECTION, MSG_NOERROR | IPC_NOWAIT);
         if (!message.empty()) {
             FILE_LOG(linfo) << "Kitchen " << pid << " closed.";
+            msgQueue->close();
             disconnected = true;
             this->_msgQueues.erase(pid);
             break;
         }
     }
     if (disconnected)
-        this->handleReceived();
+        this->handleDisconnections();
 }
 
 pid_t Reception::createKitchen(void) {
