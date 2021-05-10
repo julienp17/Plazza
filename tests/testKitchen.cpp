@@ -116,7 +116,7 @@ TEST(Kitchen, makeOnePizza_oneCook) {
     kitchenThread.join();
     time = getElapsedTime(t1);
     ASSERT_TRUE((time >= expectedTime)
-        && (time <= expectedTime + std::chrono::milliseconds(500)));
+        && (time <= expectedTime + std::chrono::milliseconds(100)));
     increment = time.count() / settings.restockTime.count();
     stock = kitchen->getStock();
     for (const auto & [ name, remaining ] : stock) {
@@ -127,4 +127,28 @@ TEST(Kitchen, makeOnePizza_oneCook) {
             ASSERT_EQ(remaining, settings.startNbIngredients + increment);
         }
     }
+}
+
+TEST(Kitchen, makeTwoPizza_twoCooks) {
+    std::thread kitchenThread;
+    std::chrono::milliseconds time(0);
+    std::chrono::milliseconds expectedTime(0);
+    plz::KitchenSettings settings;
+    auto kitchen = std::make_shared<plz::Kitchen>();
+    auto pizza1 = std::make_shared<plz::Pizza>(plz::Regina, plz::S);
+    auto pizza2 = std::make_shared<plz::Pizza>(plz::Fantasia, plz::XXL);
+
+    settings.cookingMultiplier = 1.0f;
+    settings.nbCooks = 2;
+    expectedTime = std::chrono::milliseconds(pizza2->timeToBake
+                                            + settings.inactiveTime);
+    kitchen->setSettings(settings);
+    kitchen->addPizza(pizza1);
+    kitchen->addPizza(pizza2);
+    auto t1 = std::chrono::steady_clock::now();
+    kitchenThread = std::thread(&plz::Kitchen::run, kitchen);
+    kitchenThread.join();
+    time = getElapsedTime(t1);
+    ASSERT_TRUE((time >= expectedTime)
+        && (time <= expectedTime + std::chrono::milliseconds(100)));
 }

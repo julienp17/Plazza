@@ -22,7 +22,7 @@ class Reception {
     /**
      * @brief Construct a new Reception object
      */
-    Reception(void) {}
+    Reception(void);
 
     /**
      * @brief Destroy the Reception object
@@ -126,9 +126,7 @@ class Reception {
     //* Mapping of kitchen PIDs to their message queue
     std::unordered_map<pid_t, std::shared_ptr<MessageQueue>> _msgQueues;
 
-    /**
-     * @brief The queue of pizzas to be made
-     */
+    //* The queue of pizzas to be made
     std::queue<std::shared_ptr<Pizza>> _pizzas;
 };
 }  // namespace plz

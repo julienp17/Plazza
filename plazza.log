@@ -1,0 +1,22 @@
+16:09:38.223 INFO: Restaurant is open.
+16:09:41.261 INFO: Received command : [regina s x1]
+16:09:41.312 INFO: Kitchen 21993 opened.
+16:09:41.312 INFO: Order [Regina S] sent to kitchen 21993
+16:09:41.312 INFO: Andrea is handling Regina S
+16:09:43.087 INFO: Received command : [status]
+16:09:43.312 INFO: Andrea finished making Regina S
+16:09:47.250 INFO: Received command : [regina s x2]
+16:09:47.250 INFO: Regina S delivered.
+16:09:47.250 INFO: Li is handling Regina S
+16:09:47.251 INFO: Order [Regina S] sent to kitchen 21993
+16:09:47.251 INFO: Andrea is handling Regina S
+16:09:47.251 INFO: Order [Regina S] sent to kitchen 21993
+16:09:49.251 INFO: Li finished making Regina S
+16:09:49.251 INFO: Andrea finished making Regina S
+16:09:49.904 INFO: Received command : [status]
+16:09:49.904 INFO: Regina S delivered.
+16:09:54.736 INFO: Received command : [status]
+16:09:54.736 INFO: Regina SRegina S delivered.
+16:09:54.736 INFO: Kitchen 21993 closed.
+16:10:01.984 INFO: Received command : [exit]
+16:10:01.984 INFO: Restaurant is closed.

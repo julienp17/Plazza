@@ -11,13 +11,14 @@
 #include "plazza.hpp"
 #include "Kitchen.hpp"
 #include "Error.hpp"
-
+#include "Logger.hpp"
 
 namespace plz {
 /* ----------------------- Constructors / Destructors ----------------------- */
 
 Kitchen::Kitchen(void) {
     this->init();
+    this->_msgQueue = nullptr;
 }
 
 Kitchen::Kitchen(const KitchenSettings &settings,
@@ -72,7 +73,8 @@ void Kitchen::run(void) {
     this->_isOpen = true;
     this->putCooksToWork();
     while (this->_isOpen) {
-        this->handleReceived();
+        if (this->_msgQueue != nullptr)
+            this->handleReceived();
         if (this->shouldRestock()) {
             this->restock();
             resetTimepoint(this->_lastRestock);
@@ -82,11 +84,13 @@ void Kitchen::run(void) {
         if (this->shouldClose())
             this->_isOpen = false;
     }
-    _msgQueue->send(DISCONNECTION, "Disconnection");
+    if (this->_msgQueue != nullptr)
+        _msgQueue->send(DISCONNECTION, "Disconnection");
 }
 
 void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
     std::stringstream pizzaStr;
+    std::shared_ptr<Pizza> pizza = nullptr;
 
     while (this->_isOpen) {
         std::unique_lock<std::mutex> lock(_queueMutex);
@@ -94,9 +98,14 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
             cook->setPizza(_pizzaQueue.front());
             _pizzaQueue.pop();
             lock.unlock();
-            this->useIngredients(cook->getPizza()->ingredients);
-            pizzaStr << *cook->makePizza(_settings.cookingMultiplier);
-            this->_msgQueue->send(PIZZA, pizzaStr.str());
+            pizza = cook->getPizza();
+            FILE_LOG(linfo) << cook->getName() << " is handling " << *pizza;
+            this->useIngredients(pizza->ingredients);
+            cook->makePizza(_settings.cookingMultiplier);
+            pizzaStr << *pizza;
+            if (this->_msgQueue != nullptr)
+                this->_msgQueue->send(PIZZA, pizzaStr.str());
+            FILE_LOG(linfo) << cook->getName() << " finished making " << *pizza;
         } else {
             lock.unlock();
             std::this_thread::yield();

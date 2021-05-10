@@ -24,8 +24,7 @@ SRC_F		=	utils.cpp \
 SRC_UT		=	$(addprefix $(SRC_UT_D), $(SRC_UT_F))
 OBJ_UT		=	$(SRC_UT:.cpp=.o)
 SRC_UT_D	=	tests/
-SRC_UT_F	=	testReception.cpp \
-				testKitchen.cpp
+SRC_UT_F	=	testKitchen.cpp
 
 COV_F		=	$(SRC:.cpp=.gcno) $(SRC:.cpp=.gcda) \
 				$(SRC_UT:.cpp=.gcno) $(SRC_UT:.cpp=.gcda)
