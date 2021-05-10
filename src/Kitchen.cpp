@@ -22,8 +22,8 @@ Kitchen::Kitchen(void) {
 
 Kitchen::Kitchen(const KitchenSettings &settings,
                 std::shared_ptr<MessageQueue> msgQ) {
-    this->init();
     this->_settings = settings;
+    this->init();
     this->_msgQueue = msgQ;
     this->_msgQueue->send(CONNECTION, "Connected");
 }
@@ -82,10 +82,12 @@ void Kitchen::run(void) {
         if (this->shouldClose())
             this->_isOpen = false;
     }
-    _msgQueue->send(CONNECTION, "Closing");
+    _msgQueue->send(DISCONNECTION, "Disconnection");
 }
 
 void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
+    std::stringstream pizzaStr;
+
     while (this->_isOpen) {
         std::unique_lock<std::mutex> lock(_queueMutex);
         if (!_pizzaQueue.empty() && this->canMakePizza(_pizzaQueue.front())) {
@@ -93,8 +95,8 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
             _pizzaQueue.pop();
             lock.unlock();
             this->useIngredients(cook->getPizza()->ingredients);
-            std::cout << "Finished " <<
-                *cook->makePizza(_settings.cookingMultiplier) << std::endl;
+            pizzaStr << *cook->makePizza(_settings.cookingMultiplier);
+            this->_msgQueue->send(PIZZA, pizzaStr.str());
         } else {
             lock.unlock();
             std::this_thread::yield();
@@ -139,9 +141,12 @@ void Kitchen::useIngredients(const std::vector<std::string> &ingredients) {
 void Kitchen::handleReceived(void) {
     std::string message;
 
-    message = _msgQueue->recv(ORDER, MSG_NOERROR | IPC_NOWAIT);
+    message = _msgQueue->recv(ASK_ORDER, MSG_NOERROR | IPC_NOWAIT);
     if (!message.empty())
         this->respondOrder(message);
+    message = _msgQueue->recv(ASK_STATUS, MSG_NOERROR | IPC_NOWAIT);
+    if (!message.empty())
+        this->respondStatus(message);
 }
 
 void Kitchen::respondOrder(const std::string &message) {
@@ -154,6 +159,14 @@ void Kitchen::respondOrder(const std::string &message) {
     } else {
         _msgQueue->send(ORDER, "Refused");
     }
+}
+
+void Kitchen::respondStatus(const std::string &message) {
+    std::stringstream stream;
+
+    (void)message;
+    stream << *this;
+    _msgQueue->send(STATUS, stream.str());
 }
 
 /* ---------------------------- Getters / Setters --------------------------- */

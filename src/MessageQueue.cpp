@@ -28,6 +28,7 @@ MessageQueue::~MessageQueue(void) {
 void MessageQueue::send(long type, const std::string &str, int flags) {
     struct msgbuf msg;
 
+    memset(&msg, 0, sizeof(msgbuf));
     msg.mtype = type;
     strncpy(msg.mtext, str.c_str(), MAX_MSG_LEN);
     if (msgsnd(_qid,  &msg, sizeof(msg.mtext), flags) == -1)

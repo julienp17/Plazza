@@ -205,6 +205,11 @@ class Kitchen {
     void respondOrder(const std::string &message);
 
     /**
+     * @brief Sends the status of the kitchen to the reception
+     */
+    void respondStatus(const std::string &message);
+
+    /**
      * @brief Starts every cook's thread with the cookWorker member function
      */
     void putCooksToWork(void);

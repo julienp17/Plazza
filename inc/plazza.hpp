@@ -31,8 +31,12 @@ using namespace std::literals::chrono_literals;
 namespace plz {
 enum MsgType : long {
     CONNECTION = 1,
+    DISCONNECTION,
+    ASK_ORDER,
     ORDER,
-    INFO
+    ASK_STATUS,
+    STATUS,
+    PIZZA
 };
 }  // namespace plz
 

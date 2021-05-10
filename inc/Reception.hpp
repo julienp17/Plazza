@@ -26,8 +26,11 @@ class Reception {
 
     /**
      * @brief Destroy the Reception object
+     *
+     * Waits for every kitchen process to finish
+     *
      */
-    virtual ~Reception(void) {}
+    virtual ~Reception(void);
 
     /**
      * @brief Main loop of the reception
@@ -35,12 +38,19 @@ class Reception {
     void run(void);
 
     /**
-     * @brief Add pizzas to the queue
+     * @brief Do commands related to the reception
      *
-     * @param orders The string defining the orders, separated by the ';'
+     * Commands may be either pizza orders, or status about the restaurant
+     * 
+     * @param commands The string defining the commands, separated by the ';'
      * delimiter
      */
-    void placeOrders(const std::string &orders);
+    void doCommands(const std::string &commands);
+
+    /**
+     * @brief Print the status of the restaurant
+     */
+    void printStatus(void);
 
     /**
      * @brief Adds a pizza to the queue
@@ -102,6 +112,11 @@ class Reception {
      * @return true if the order is correct, false otherwise
      */
     bool orderIsCorrect(const VecStr_t &tokens);
+
+    /**
+     * @brief Checks the messages received by kitchens, and act accordingly
+     */
+    void handleReceived(void);
 
     /**
      * @brief Settings for the kitchens of the reception
