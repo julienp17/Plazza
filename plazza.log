@@ -1,27 +1,54 @@
-16:30:45.947 INFO: Kitchen settings:
-Cooking multiplier = 1
-Number of cooks = 5
+16:54:31.796 INFO: Restaurant is open.
+16:54:31.796 INFO: Kitchen settings:
+Cooking multiplier = 0.5
+Number of cooks = 2
 Restocking time = 2000ms
-16:30:45.947 INFO: Restaurant is open.
-16:30:48.202 INFO: Received command : [regina s x3]
-16:30:48.252 INFO: Kitchen 4849 opened.
-16:30:48.253 INFO: Johnny Sins is handling Regina S
-16:30:48.253 INFO: Order [Regina S] sent to kitchen 4849
-16:30:48.253 INFO: Michael is handling Regina S
-16:30:48.253 INFO: Order [Regina S] sent to kitchen 4849
-16:30:48.253 INFO: Order [Regina S] sent to kitchen 4849
-16:30:50.475 INFO: Received command : [status]
-16:30:52.253 INFO: Johnny Sins finished making Regina S
-16:30:52.253 INFO: Michael finished making Regina S
-16:30:52.263 INFO: Johnny Sins sent Regina S
-16:30:52.263 INFO: Johnny Sins is handling Regina S
-16:30:52.273 INFO: Michael sent Regina S
-16:30:56.264 INFO: Johnny Sins finished making Regina S
-16:30:56.274 INFO: Johnny Sins sent Regina S
-16:32:45.382 INFO: Received command : [hey]
-16:32:45.382 INFO: Regina S delivered.
-16:32:45.382 INFO: Regina S delivered.
-16:32:45.382 INFO: Regina SRegina S delivered.
-16:32:45.382 INFO: Kitchen 4849 closed.
-16:32:45.382 DEBUG: Pizza ordering must be: TYPE SIZE NUMBER.
-16:32:58.953 INFO: Restaurant is closed.
+16:54:35.516 INFO: Received command : [regina s x8]
+16:54:35.567 INFO: Kitchen 7373 opened.
+16:54:35.567 INFO: Tristan is handling Regina S
+16:54:35.567 INFO: Order [Regina S] sent to kitchen 7373
+16:54:35.567 INFO: Order [Regina S] sent to kitchen 7373
+16:54:35.567 INFO: Paul Bocuse is handling Regina S
+16:54:35.567 INFO: Order [Regina S] sent to kitchen 7373
+16:54:35.568 INFO: Order [Regina S] sent to kitchen 7373
+16:54:35.618 INFO: Kitchen 7376 opened.
+16:54:35.618 INFO: Order [Regina S] sent to kitchen 7376
+16:54:35.618 INFO: Tristan is handling Regina S
+16:54:35.619 INFO: Order [Regina S] sent to kitchen 7376
+16:54:35.619 INFO: Order [Regina S] sent to kitchen 7376
+16:54:35.619 INFO: Paul Bocuse is handling Regina S
+16:54:35.619 INFO: Order [Regina S] sent to kitchen 7376
+16:54:39.567 INFO: Tristan finished making Regina S
+16:54:39.567 INFO: Paul Bocuse finished making Regina S
+16:54:39.577 INFO: Tristan sent Regina S
+16:54:39.578 INFO: Tristan is handling Regina S
+16:54:39.588 INFO: Paul Bocuse sent Regina S
+16:54:39.588 INFO: Paul Bocuse is handling Regina S
+16:54:39.619 INFO: Tristan finished making Regina S
+16:54:39.619 INFO: Paul Bocuse finished making Regina S
+16:54:39.629 INFO: Tristan sent Regina S
+16:54:39.629 INFO: Tristan is handling Regina S
+16:54:39.639 INFO: Paul Bocuse sent Regina S
+16:54:39.639 INFO: Paul Bocuse is handling Regina S
+16:54:43.578 INFO: Tristan finished making Regina S
+16:54:43.588 INFO: Paul Bocuse finished making Regina S
+16:54:43.588 INFO: Tristan sent Regina S
+16:54:43.598 INFO: Paul Bocuse sent Regina S
+16:54:43.629 INFO: Tristan finished making Regina S
+16:54:43.639 INFO: Paul Bocuse finished making Regina S
+16:54:43.640 INFO: Tristan sent Regina S
+16:54:43.650 INFO: Paul Bocuse sent Regina S
+16:54:48.579 INFO: Kitchen 7373 closed.
+16:54:48.630 INFO: Kitchen 7376 closed.
+16:54:55.840 INFO: Received command : [hey]
+16:54:55.840 INFO: Regina S delivered.
+16:54:55.840 INFO: Regina S delivered.
+16:54:55.840 INFO: Regina S delivered.
+16:54:55.840 INFO: Regina S delivered.
+16:54:55.840 INFO: Regina S delivered.
+16:54:55.840 INFO: Regina S delivered.
+16:54:55.840 INFO: Regina S delivered.
+16:54:55.840 INFO: Regina SR delivered.
+16:54:55.840 DEBUG: Pizza ordering must be: TYPE SIZE NUMBER.17:09:49.463 INFO: Received command : [status]
+17:09:56.489 INFO: Received command : [exit]
+17:09:56.490 INFO: Restaurant is closed.

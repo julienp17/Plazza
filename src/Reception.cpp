@@ -35,7 +35,6 @@ namespace plz {
 
 Reception::Reception(void) {
     initLogger("plazza.log", ldebug);
-    FILE_LOG(linfo) << _kitchenSettings;
 }
 
 Reception::~Reception(void) {
@@ -53,6 +52,7 @@ void Reception::run(void) {
 
     setSigIntHandler();
     FILE_LOG(linfo) << "Restaurant is open.";
+    FILE_LOG(linfo) << _kitchenSettings;
     std::cout << "Welcome to Plazza! The Pizzeria for everyone!" << std::endl;
     while (isOpen) {
         std::cout << "Place your order here: ";
@@ -179,7 +179,6 @@ void Reception::handleDisconnections(void) {
     for (auto &[pid, msgQueue] : this->_msgQueues) {
         message = msgQueue->recv(DISCONNECTION, MSG_NOERROR | IPC_NOWAIT);
         if (!message.empty()) {
-            FILE_LOG(linfo) << "Kitchen " << pid << " closed.";
             msgQueue->close();
             disconnected = true;
             this->_msgQueues.erase(pid);

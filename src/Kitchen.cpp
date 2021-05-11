@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <unistd.h>
 #include "plazza.hpp"
 #include "Kitchen.hpp"
 #include "Error.hpp"
@@ -88,6 +89,7 @@ void Kitchen::run(void) {
         std::lock_guard<std::mutex> lk(_msgQueueMutex);
         if (this->_msgQueue != nullptr)
             _msgQueue->send(DISCONNECTION, "Disconnection");
+        FILE_LOG(linfo) << "Kitchen " << getpid() << " closed.";
     }
 }
 
@@ -106,9 +108,11 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
             this->useIngredients(pizza->ingredients);
             cook->makePizza(_settings.cookingMultiplier);
             FILE_LOG(linfo) << cook->getName() << " finished making " << *pizza;
+            pizzaStr.str("");
+            pizzaStr.clear();
+            pizzaStr << *pizza;
             {
                 std::lock_guard<std::mutex> lk(_msgQueueMutex);
-                pizzaStr << *pizza;
                 if (this->_msgQueue != nullptr)
                     this->_msgQueue->send(PIZZA, pizzaStr.str());
                 std::this_thread::sleep_for(10ms);
