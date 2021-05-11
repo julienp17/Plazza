@@ -40,7 +40,8 @@ std::string getRandomName(void) {
         "Matéo", "Mathias", "Jackie", "Michel", "Marc", "Marie", "Carlos",
         "Juan", "Fred", "Teddy", "Salt Bae", "Brice", "Philippe", "Etchebest",
         "Gordon", "Paolo", "Andrea", "Johnny", "Cyril", "Itodoki", "Bilel",
-        "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco"
+        "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco",
+        "Bigard"
     };
 
     return names[rand() % names.size()];
