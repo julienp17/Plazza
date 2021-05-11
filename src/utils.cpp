@@ -38,10 +38,11 @@ std::string getRandomName(void) {
         "Antoine", "Anthony", "William", "Kevin", "Clément", "Thomas", "Dylan",
         "Laurent", "Didier", "Robert", "Samuel", "Etienne", "Luan", "Jules",
         "Matéo", "Mathias", "Jackie", "Michel", "Marc", "Marie", "Carlos",
-        "Juan", "Fred", "Teddy", "Salt Bae", "Brice", "Philippe", "Etchebest",
+        "Juan", "Fred", "Teddy", "Salt Bae", "Brice", "Philippe Etchebest",
         "Gordon", "Paolo", "Andrea", "Johnny", "Cyril", "Itodoki", "Bilel",
-        "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco"
-    };
+        "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco",
+        "Jean-Pierre"
 
+    };
     return names[rand() % names.size()];
 }
