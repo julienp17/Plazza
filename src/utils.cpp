@@ -44,9 +44,7 @@ std::string getRandomName(void) {
         "Jean-Pierre", "Cyril Lignac", "Paul Bocuse", "Michel Drucker",
         "Jean-Marie Bigard", "Laurent Baffie", "Patrick Sébastien",
         "Didier Raoult", "Dany Boon", "Laurent Ruquier","la jument de Michao",
-        "Tri Martolod", "Karim Benzema", "Manuel Ferrara", "Abella Danger"
-    };
+        "Tri Martolod", "Karim Benzema", "Manuel Ferrara", "Abella Danger"};
 
-    };
     return names[rand() % names.size()];
 }
