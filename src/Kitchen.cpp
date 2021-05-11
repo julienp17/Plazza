@@ -110,9 +110,9 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
                 std::lock_guard<std::mutex> lk(_msgQueueMutex);
                 if (this->_msgQueue != nullptr) {
                     this->_msgQueue->send(PIZZA, pizzaStr.str());
-                    FILE_LOG(linfo) << cook->getName() << " sent " << *pizza;
                 }
             }
+            FILE_LOG(linfo) << cook->getName() << " sent " << *pizza;
         } else {
             lock.unlock();
             std::this_thread::yield();
