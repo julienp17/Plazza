@@ -35,6 +35,7 @@ namespace plz {
 
 Reception::Reception(void) {
     initLogger("plazza.log", ldebug);
+    FILE_LOG(linfo) << _kitchenSettings;
 }
 
 Reception::~Reception(void) {
@@ -82,6 +83,7 @@ void Reception::doCommands(const std::string &commands_str) {
 void Reception::printStatus(void) {
     for (auto &[pid, msgQueue] : this->_msgQueues) {
         msgQueue->send(ASK_STATUS, "Status");
+        std::cout << "Kitchen " << pid << ":" << std::endl;
         std::cout << msgQueue->recv(STATUS) << std::endl;
     }
     if (this->_msgQueues.empty())

@@ -58,11 +58,12 @@ void Kitchen::initStock(void) {
 
 void Kitchen::initCooks(void) {
     std::shared_ptr<Cook> cook = nullptr;
+    std::vector<std::string> names = getRandomNames();
 
     this->_cooks.clear();
     this->_cooks.reserve(this->_settings.nbCooks);
     for (size_t id = 1 ; id < _settings.nbCooks + 1 ; id++) {
-        cook = std::make_shared<Cook>(Cook(id, getRandomName()));
+        cook = std::make_shared<Cook>(Cook(id, names[rand() % names.size()]));
         _cooks.push_back(std::make_pair(cook, std::thread()));
     }
 }
@@ -110,7 +111,7 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
                 pizzaStr << *pizza;
                 if (this->_msgQueue != nullptr)
                     this->_msgQueue->send(PIZZA, pizzaStr.str());
-                std::this_thread::sleep_for(5ms);
+                std::this_thread::sleep_for(10ms);
             }
             FILE_LOG(linfo) << cook->getName() << " sent " << *pizza;
         } else {
@@ -226,7 +227,7 @@ bool Kitchen::canMakePizza(const std::shared_ptr<Pizza> pizza) {
     return true;
 }
 
-std::vector<std::shared_ptr<Cook>> Kitchen::getCooks(void) const {
+const std::vector<std::shared_ptr<Cook>> Kitchen::getCooks(void) const {
     std::vector<std::shared_ptr<Cook>> cooks;
 
     for (auto &pair : _cooks)
@@ -257,7 +258,14 @@ void Kitchen::setSettings(const KitchenSettings &settings) {
 std::ostream &operator<<(std::ostream &out, const plz::Kitchen &kitchen) {
     auto stock = kitchen.getStock();
     auto cooks = kitchen.getCooks();
+    auto queue = kitchen.getQueue();
 
+    out << "Queue:" << std::endl;
+    while (!queue.empty()) {
+        out << "[" << *queue.front() << "] -> ";
+        queue.pop();
+    }
+    out << "[]" << std::endl;
     out << "Cooks:" << std::endl;
     for (const auto &cook : cooks)
         out << " - " << *cook << std::endl;

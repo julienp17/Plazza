@@ -7,6 +7,8 @@
 
 #include <vector>
 #include <random>
+#include <iostream>
+#include <fstream>
 #include "utils.hpp"
 
 VecStr_t split(const std::string &str, char delim) {
@@ -32,19 +34,16 @@ void resetTimepoint(
     timepoint = std::chrono::steady_clock::now();
 }
 
-std::string getRandomName(void) {
-    std::vector<std::string> names = {
-        "Lolo", "Paul", "Laura", "Estellia", "Dorian", "Julien", "Tristan",
-        "Antoine", "Anthony", "William", "Kevin", "Clément", "Thomas", "Dylan",
-        "Laurent", "Didier", "Robert", "Samuel", "Etienne", "Luan", "Jules",
-        "Matéo", "Mathias", "Jackie", "Michel", "Marc", "Marie", "Carlos",
-        "Juan", "Fred", "Teddy", "Salt Bae", "Brice", "Philippe Etchebest",
-        "Gordon", "Paolo", "Andrea", "Johnny", "Cyril", "Itodoki", "Bilel",
-        "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco",
-        "Bigard", "la jument de Michao", "Tri Martolod",
-        "Jean-Pierre", "Cyril Lignac", "Paul Bocuse", "Michel Drucker",
-        "Jean-Marie Bigard", "Laurent Baffie", "Patrick Sébastien",
-        "Didier Raoult", "Dany Boon", "Laurent Ruquier"
-    };
-    return names[rand() % names.size()];
+std::vector<std::string> getRandomNames(void) {
+    std::ifstream file(COOK_NAMES_PATH);
+    std::vector<std::string> names;
+    std::string name;
+
+    if (!file.is_open()) {
+        std::cerr << "Couldn't open " << COOK_NAMES_PATH << std::endl;
+        return names;
+    }
+    while (getline(file, name))
+        names.push_back(name);
+    return names;
 }

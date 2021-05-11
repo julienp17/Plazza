@@ -13,6 +13,8 @@
 #include <vector>
 #include <chrono>
 
+#define COOK_NAMES_PATH     "assets/cooks.txt"
+
 using VecStr_t = std::vector<std::string>;
 
 VecStr_t split(const std::string &str, char delim);
@@ -20,7 +22,7 @@ std::chrono::milliseconds getElapsedTime(
     std::chrono::time_point<std::chrono::steady_clock> t1);
 void resetTimepoint(
         std::chrono::time_point<std::chrono::steady_clock> &timepoint);
-std::string getRandomName(void);
+std::vector<std::string> getRandomNames(void);
 
 template <typename T>
 bool isPositiveNumber(const std::string &str) {

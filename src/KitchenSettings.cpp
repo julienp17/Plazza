@@ -17,3 +17,11 @@ KitchenSettings::KitchenSettings(void) {
     this->restockNb = 1;
 }
 }  // namespace plz
+
+std::ostream &operator<<(std::ostream &out, const plz::KitchenSettings &sett) {
+    out << "Kitchen settings:" << std::endl
+        << "Cooking multiplier = " << sett.cookingMultiplier << std::endl
+        << "Number of cooks = " << sett.nbCooks << std::endl
+        << "Restocking time = " << sett.restockTime.count() << "ms";
+    return out;
+}

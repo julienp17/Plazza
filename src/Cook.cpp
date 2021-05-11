@@ -11,7 +11,7 @@ namespace plz {
 std::shared_ptr<Pizza> Cook::makePizza(const float multiplier) {
     std::shared_ptr<Pizza> pizza = _pizza;
 
-    std::this_thread::sleep_for(pizza->timeToBake * multiplier);
+    std::this_thread::sleep_for(pizza->timeToBake / multiplier);
     _pizza = nullptr;
     return pizza;
 }

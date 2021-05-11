@@ -97,34 +97,23 @@ class Kitchen {
      */
     bool canMakePizza(const std::shared_ptr<Pizza> pizza);
 
-    /**
-     * @brief Get the cooks of the kitchen
-     * 
-     * @return A vector of shared pointers to the cooks
-     */
-    std::vector<std::shared_ptr<Cook>> getCooks(void) const;
+    //* Get the kitchen's cooks
+    const std::vector<std::shared_ptr<Cook>> getCooks(void) const;
 
-    /**
-     * @brief Get the kitchen's settings
-     *
-     * @return The settings of the kitchen
-     */
+    //* Get the kitchen's settings
     const KitchenSettings &getSettings(void) const {
         return _settings;
     }
 
-    /**
-     * @brief Sets new settings for the kitchen
-     *
-     * @param settings The new settings for the kitchen
-     */
+    //* Get the kitchen's pizza queue
+    const std::queue<std::shared_ptr<Pizza>> getQueue(void) const {
+        return _pizzaQueue;
+    }
+
+    //* Sets new settings for the kitchen
     void setSettings(const KitchenSettings &settings);
 
-    /**
-     * @brief Get the mapping of ingredients to their remaining stock
-     *
-     * @return A map of ingredients name as std::string, to their stock as size_t
-     */
+    //* Get the mapping of ingredients to their remaining stock
     inline const std::unordered_map<std::string, size_t> &getStock(void) const {
         return _stock;
     }

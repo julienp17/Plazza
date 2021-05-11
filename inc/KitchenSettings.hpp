@@ -8,6 +8,7 @@
 #ifndef INC_KITCHENSETTINGS_HPP_
 #define INC_KITCHENSETTINGS_HPP_
 
+#include <iostream>
 #include <chrono>
 
 namespace plz {
@@ -51,5 +52,7 @@ struct KitchenSettings {
     size_t restockNb;
 };
 }  // namespace plz
+
+std::ostream &operator<<(std::ostream &out, const plz::KitchenSettings &settin);
 
 #endif  // INC_KITCHENSETTINGS_HPP_
