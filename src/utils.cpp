@@ -41,7 +41,7 @@ std::string getRandomName(void) {
         "Juan", "Fred", "Teddy", "Salt Bae", "Brice", "Philippe", "Etchebest",
         "Gordon", "Paolo", "Andrea", "Johnny", "Cyril", "Itodoki", "Bilel",
         "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco",
-        "Bigard"
+        "Bigard", "la jument de Michao", "Tri Martolod"
     };
 
     return names[rand() % names.size()];
