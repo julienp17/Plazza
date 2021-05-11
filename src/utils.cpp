@@ -41,7 +41,9 @@ std::string getRandomName(void) {
         "Juan", "Fred", "Teddy", "Salt Bae", "Brice", "Philippe Etchebest",
         "Gordon", "Paolo", "Andrea", "Johnny", "Cyril", "Itodoki", "Bilel",
         "Jarry", "Li", "Mohamed", "Marcus", "Abdul", "Michael", "Francisco",
-        "Jean-Pierre"
+        "Jean-Pierre", "Cyril Lignac", "Paul Bocuse", "Michel Drucker",
+        "Jean-Marie Bigard", "Laurent Baffie", "Patrick Sébastien",
+        "Didier Raoult", "Dany Boon", "Laurent Ruquier"
 
     };
     return names[rand() % names.size()];
