@@ -199,7 +199,7 @@ pid_t Reception::createKitchen(void) {
     if (pid == -1) {
         throw ReceptionError();
     } else if (pid == 0) {
-        srand(time(NULL));
+        srand(time(NULL) + _msgQueues.size());
         plz::Kitchen kitchen(this->_kitchenSettings, msgQueue);
         kitchen.run();
         _exit(0);
