@@ -67,7 +67,8 @@ void Reception::doCommands(const std::string &commands_str) {
     VecStr_t commands;
 
     commands = split(commands_str, ';');
-    for (const std::string &command : commands) {
+    for (std::string &command : commands) {
+        trim(command);
         FILE_LOG(linfo) << "Received command : [" << command << "]";
         this->handleReceived();
         this->handleDisconnections();

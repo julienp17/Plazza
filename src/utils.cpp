@@ -5,6 +5,9 @@
 ** utils
 */
 
+#include <algorithm>
+#include <cctype>
+#include <locale>
 #include <vector>
 #include <random>
 #include <iostream>
@@ -20,6 +23,23 @@ VecStr_t split(const std::string &str, char delim) {
         if (!item.empty())
             tokens.push_back(item);
     return tokens;
+}
+
+static void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return ch != ' ' && ch != '\t';
+    }));
+}
+
+static void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return ch != ' ' && ch != '\t';
+    }).base(), s.end());
+}
+
+void trim(std::string &str) {
+    ltrim(str);
+    rtrim(str);
 }
 
 std::chrono::milliseconds getElapsedTime(

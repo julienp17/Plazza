@@ -18,6 +18,7 @@
 using VecStr_t = std::vector<std::string>;
 
 VecStr_t split(const std::string &str, char delim);
+void trim(std::string &str);
 std::chrono::milliseconds getElapsedTime(
     std::chrono::time_point<std::chrono::steady_clock> t1);
 void resetTimepoint(
