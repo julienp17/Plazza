@@ -22,6 +22,10 @@ std::ostream &operator<<(std::ostream &out, const plz::KitchenSettings &sett) {
     out << "Kitchen settings:" << std::endl
         << "Cooking multiplier = " << sett.cookingMultiplier << std::endl
         << "Number of cooks = " << sett.nbCooks << std::endl
-        << "Restocking time = " << sett.restockTime.count() << "ms";
+        << "Restocking time = " << sett.restockTime.count() << "ms" << std::endl
+        << "Inactive time = " << sett.inactiveTime.count() << "ms" << std::endl
+        << "Starting number of ingredients = " << sett.startNbIngredients
+            << std::endl
+        << "Restocking number = " << sett.restockNb;
     return out;
 }

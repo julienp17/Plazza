@@ -1,5 +1,9 @@
 Abdul
 Andrea
+Abella Danger
+Alus Tucru
+Alfredo Linguini
+Colette Tatou
 Anthony
 Antoine
 Bilel
@@ -18,17 +22,33 @@ El pueblo
 Francisco
 Fred
 Gordon Ramsay
+Guy Fieri
 Itodoki
-Jackie
+Jackie Chan
+James Bond
+Skeletor
+Mario
+Luigi
+Candy
+Kaaris
 Jarry
 Jean-Marie Bigard
 Jean-Pierre
 Johnny Sins
-Juan
+Juan Pablo
 Jules
 Julien
 Kevin
 la jument de Michao
+Tonio Trussardi
+Chef
+Obama
+Francois Hollande
+Risitas
+Nicolas Sarkozy
+Eugene
+Le serveur gay de BK
+Le serveur de KDK
 Laura
 Laurent Baffie
 Laurent Ruquier
@@ -38,16 +58,21 @@ Luan
 Manu le coq
 Marc
 Marcus
+Un etudiant d'art
+Un etudiant en astro-physique
 Marie
 Matéo
 Mathias
 Michael
 Michel Drucker
-Mohamed
+Mohammed
+Un chien
 Paolo
 Patrick Sébastien
 Paul Bocuse
 Philippe Etchebest
+Ratatouille
+RebeuDeter
 Robert
 Salt Bae
 Samuel
@@ -58,3 +83,6 @@ Thomas
 Tri Martolod
 Tristan
 William
+Un chaumeur
+Chef Kelly
+Pastis

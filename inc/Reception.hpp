@@ -11,6 +11,7 @@
 #include <string>
 #include <memory>
 #include <queue>
+#include <map>
 #include "plazza.hpp"
 #include "Pizza.hpp"
 #include "Kitchen.hpp"
@@ -123,7 +124,7 @@ class Reception {
     KitchenSettings _kitchenSettings;
 
     //* Mapping of kitchen PIDs to their message queue
-    std::unordered_map<pid_t, std::shared_ptr<MessageQueue>> _msgQueues;
+    std::map<pid_t, std::shared_ptr<MessageQueue>> _msgQueues;
 
     //* The queue of pizzas to be made
     std::queue<std::shared_ptr<Pizza>> _pizzas;

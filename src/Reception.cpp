@@ -39,9 +39,10 @@ Reception::Reception(void) {
 
 Reception::~Reception(void) {
     for (auto &[pid, msgQueue] : this->_msgQueues) {
-        msgQueue->close();
         waitpid(pid, NULL, 0);
+        msgQueue->close();
     }
+    FILE_LOG(linfo) << "Restaurant is closed.";
     endLogger();
 }
 
@@ -59,8 +60,7 @@ void Reception::run(void) {
         getline(std::cin, commands);
         this->doCommands(commands);
     }
-    std::cout << "Closing the restaurant..." << std::endl;
-    FILE_LOG(linfo) << "Restaurant is closed.";
+    std::cout << "Closing the restaurant, please wait..." << std::endl;
 }
 
 void Reception::doCommands(const std::string &commands_str) {
