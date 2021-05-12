@@ -20,37 +20,20 @@
 namespace plz {
 class Reception {
  public:
-    /**
-     * @brief Construct a new Reception object
-     */
+    //* Construct a new Reception object
     Reception(void);
 
     /**
      * @brief Destroy the Reception object
      *
      * Waits for every kitchen process to finish
-     *
      */
     virtual ~Reception(void);
 
-    /**
-     * @brief Main loop of the reception
-     */
+    //* Main loop of the reception
     void run(void);
 
-    /**
-     * @brief Do commands related to the reception
-     *
-     * Commands may be either pizza orders, or status about the restaurant
-     * 
-     * @param commands The string defining the commands, separated by the ';'
-     * delimiter
-     */
-    void doCommands(const std::string &commands);
-
-    /**
-     * @brief Print the status of the restaurant
-     */
+    //* Print the status of each kitchen
     void printStatus(void);
 
     /**
@@ -63,10 +46,26 @@ class Reception {
      */
     bool placeOrder(const std::string &order);
 
+    //* Get the settings of the kitchens
+    inline KitchenSettings getKitchenSettings(void) const {
+        return _kitchenSettings;
+    }
+
+    //* Set new settings for kitchens
+    inline void setKitchenSettings(const KitchenSettings &kitchenSettings) {
+        _kitchenSettings = kitchenSettings;
+    }
+
+ private:
     /**
-     * @brief Delegate an order to a kitchen, creating one if none is available
+     * @brief Do commands related to the reception
+     *
+     * Commands may be either pizza orders, status about the restaurant, or exit
+     * 
+     * @param commands The string defining the commands, separated by the ';'
+     * delimiter
      */
-    void delegateOrder(std::shared_ptr<Pizza> pizza);
+    void doCommands(const std::string &commands);
 
     /**
      * @brief Forks a new process holding a kitchen
@@ -79,40 +78,25 @@ class Reception {
     pid_t createKitchen(void);
 
     /**
-     * @brief Get the pizza queue
-     *
-     * @return std::queue<std::shared_ptr<Pizza>> The pizza queue
-     */
-    inline const std::queue<std::shared_ptr<Pizza>> &getPizzaQueue(void) const {
-        return _pizzas;
-    }
-
-    /**
-     * @brief Get the Kitchen Settings object
-     *
-     * @return KitchenSettings The settings of the created kitchens
-     */
-    inline KitchenSettings getKitchenSettings(void) const {
-        return _kitchenSettings;
-    }
-
-    /**
-     * @brief Set the Kitchen Settings object
-     * 
-     * @param settings The new kitchen settings
-     */
-    inline void setKitchenSettings(const KitchenSettings &kitchenSettings) {
-        _kitchenSettings = kitchenSettings;
-    }
-
- private:
-    /**
      * @brief Checks if the order format is correct
      *
      * @param tokens The order tokens
      * @return true if the order is correct, false otherwise
      */
     bool orderIsCorrect(const VecStr_t &tokens);
+
+    //* Delegate an order to a kitchen, creating one if none is available
+    void delegateOrder(const std::string &order);
+
+    /**
+     * @brief Sends an order to a kitchen
+     *
+     * @param msgQueue The message queue of the kitchen
+     * @param order The order to send
+     * @return true if the order was accepted, false otherwise
+     */
+    bool sendOrder(std::shared_ptr<MessageQueue> msgQueue,
+                    const std::string &order);
 
     //* Checks the messages received by kitchens, and act accordingly
     void handleReceived(void);
@@ -125,9 +109,6 @@ class Reception {
 
     //* Mapping of kitchen PIDs to their message queue
     std::map<pid_t, std::shared_ptr<MessageQueue>> _msgQueues;
-
-    //* The queue of pizzas to be made
-    std::queue<std::shared_ptr<Pizza>> _pizzas;
 };
 }  // namespace plz
 

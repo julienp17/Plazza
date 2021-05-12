@@ -34,15 +34,10 @@ namespace plz {
 /* ----------------------- Constructors / Destructors ----------------------- */
 
 Reception::Reception(void) {
-    initLogger("plazza.log", ldebug);
+    initLogger("./plazza.log", ldebug);
 }
 
 Reception::~Reception(void) {
-    for (auto &[pid, msgQueue] : this->_msgQueues) {
-        waitpid(pid, NULL, 0);
-        msgQueue->close();
-    }
-    FILE_LOG(linfo) << "Restaurant is closed.";
     endLogger();
 }
 
@@ -61,6 +56,11 @@ void Reception::run(void) {
         this->doCommands(commands);
     }
     std::cout << "Closing the restaurant, please wait..." << std::endl;
+    for (auto &[pid, msgQueue] : this->_msgQueues) {
+        waitpid(pid, NULL, 0);
+        msgQueue->close();
+    }
+    FILE_LOG(linfo) << "Restaurant is closed.";
 }
 
 void Reception::doCommands(const std::string &commands_str) {
@@ -92,7 +92,6 @@ void Reception::printStatus(void) {
 }
 
 bool Reception::placeOrder(const std::string &order) {
-    std::shared_ptr<Pizza> pizza = nullptr;
     size_t nbPizzas = 0;
     VecStr_t tokens = split(order, ' ');
 
@@ -100,40 +99,40 @@ bool Reception::placeOrder(const std::string &order) {
         std::cout << "Invalid order." << std::endl;
         return false;
     }
-    pizza = std::make_shared<Pizza>(getPizzaType(tokens[0]),
-                                    getPizzaSize(tokens[1]));
     nbPizzas = getNumber<size_t>(tokens[2].substr(1));
     for (size_t i = 0 ; i < nbPizzas ; i++)
-        this->delegateOrder(pizza);
+        this->delegateOrder(tokens[0] + " " + tokens[1]);
     return true;
 }
 
-void Reception::delegateOrder(std::shared_ptr<Pizza> pizza) {
-    std::string orderStr = getPizzaType(pizza->type) + " "
-                            + getPizzaSize(pizza->size);
-    std::string response = "Refused";
-    pid_t newPid = 0;
+void Reception::delegateOrder(const std::string &order) {
+    bool sent = false;
+    pid_t nPid = 0;
 
     for (auto &[pid, msgQueue] : this->_msgQueues) {
-        msgQueue->send(ASK_ORDER, orderStr);
-        response = msgQueue->recv(ORDER);
-        if (response == "Accepted") {
-            std::cout << "Order placed for " << *pizza << "." << std::endl;
-            FILE_LOG(linfo) << "Order [" << *pizza << "] sent to kitchen " << pid;
-            break;
-        }
+        sent = this->sendOrder(msgQueue, order);
+        if (!sent)
+            continue;
+        std::cout << "Order placed for " << order << "." << std::endl;
+        FILE_LOG(linfo) << "Order [" << order << "] sent to kitchen " << pid;
+        break;
     }
-    if (response == "Refused") {
-        newPid = this->createKitchen();
-        this->_msgQueues[newPid]->send(ASK_ORDER, orderStr);
-        response = this->_msgQueues[newPid]->recv(ORDER);
-        if (response == "Accepted") {
-            std::cout << "Order placed for " << *pizza << "." << std::endl;
-            FILE_LOG(linfo) << "Order [" << *pizza << "] sent to kitchen " << newPid;
-        } else {
-            std::cout << "Failed to place " << *pizza << "." << std::endl;
+    if (!sent) {
+        nPid = this->createKitchen();
+        sent = this->sendOrder(this->_msgQueues[nPid], order);
+        if (!sent) {
+            std::cout << "Failed to place " << order << "." << std::endl;
+            return;
         }
+        std::cout << "Order placed for " << order << "." << std::endl;
+        FILE_LOG(linfo) << "Order [" << order << "] sent to kitchen " << nPid;
     }
+}
+
+bool Reception::sendOrder(std::shared_ptr<MessageQueue> msgQueue,
+                            const std::string &orderStr) {
+    msgQueue->send(ASK_ORDER, orderStr);
+    return msgQueue->recv(ORDER) == "Accepted";
 }
 
 bool Reception::orderIsCorrect(const VecStr_t &tokens) {
@@ -159,7 +158,7 @@ bool Reception::orderIsCorrect(const VecStr_t &tokens) {
 }
 
 void Reception::handleReceived(void) {
-    std::string message = "hey";
+    std::string message = "not empty";
 
     for (auto &[pid, msgQueue] : this->_msgQueues) {
         while (!message.empty()) {
@@ -169,7 +168,7 @@ void Reception::handleReceived(void) {
                 FILE_LOG(linfo) << message << " delivered.";
             }
         }
-        message = "hey";
+        message = "not empty";
     }
 }
 

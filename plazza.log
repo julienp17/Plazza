@@ -1,29 +1,20 @@
-12:11:20.179 INFO: Restaurant is open.
-12:11:20.179 INFO: Kitchen settings:
+13:51:13.701 INFO: Restaurant is open.
+13:51:13.701 INFO: Kitchen settings:
 Cooking multiplier = 2
 Number of cooks = 2
-Restocking time = 11000ms
+Restocking time = 2000ms
 Inactive time = 5000ms
 Starting number of ingredients = 5
 Restocking number = 1
-12:11:25.314 INFO: Received command : [regina s x4]
-12:11:25.364 INFO: Kitchen 5272 opened.
-12:11:25.364 INFO: Luan is handling Regina S
-12:11:25.364 INFO: Order [Regina S] sent to kitchen 5272
-12:11:25.365 INFO: Order [Regina S] sent to kitchen 5272
-12:11:25.365 INFO: Luan is handling Regina S
-12:11:25.365 INFO: Order [Regina S] sent to kitchen 5272
-12:11:25.365 INFO: Order [Regina S] sent to kitchen 5272
-12:11:25.365 INFO: Received command : [exit]
-12:11:29.364 INFO: Luan finished making Regina S
-12:11:29.365 INFO: Luan finished making Regina S
-12:11:29.375 INFO: Luan sent Regina S
-12:11:29.375 INFO: Luan is handling Regina S
-12:11:29.385 INFO: Luan sent Regina S
-12:11:29.385 INFO: Luan is handling Regina S
-12:11:33.375 INFO: Luan finished making Regina S
-12:11:33.385 INFO: Luan finished making Regina S
-12:11:33.385 INFO: Luan sent Regina S
-12:11:33.396 INFO: Luan sent Regina S
-12:11:38.376 INFO: Kitchen 5272 closed.
-12:11:38.376 INFO: Restaurant is closed.
+13:51:17.189 INFO: Received command : [regina s x1]
+13:51:17.239 INFO: Kitchen 7891 opened.
+13:51:17.239 INFO: Order [regina s] sent to kitchen 7891
+13:51:17.240 INFO: Matéo is handling Regina S
+13:51:21.240 INFO: Matéo finished making Regina S
+13:51:21.250 INFO: Matéo sent Regina S
+13:51:25.736 INFO: Received command : [hey]
+13:51:25.736 INFO: Regina S delivered.
+13:51:25.736 DEBUG: Pizza ordering must be: TYPE SIZE NUMBER.
+13:51:26.241 INFO: Kitchen 7891 closed.
+13:51:27.864 INFO: Received command : [exit]
+13:51:27.864 INFO: Restaurant is closed.
