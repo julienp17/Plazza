@@ -169,10 +169,8 @@ class Kitchen {
      */
     bool shouldClose(void) const;
 
-    /**
-     * @brief Gets the number of available cooks
-     */
-    size_t getNbAvailableCooks(void) const;
+    //* Get the number of pizzas currently being processed by the kitchen
+    size_t getNbPizzasProcessed(void);
 
     /**
      * @brief Consumes one piece of each ingredients from the stock

@@ -115,9 +115,9 @@ void Kitchen::cookWorker(std::shared_ptr<Cook> cook) {
                 std::lock_guard<std::mutex> lk(_msgQueueMutex);
                 if (this->_msgQueue != nullptr)
                     this->_msgQueue->send(PIZZA, pizzaStr.str());
+                FILE_LOG(linfo) << cook->getName() << " sent " << *pizza;
                 std::this_thread::sleep_for(10ms);
             }
-            FILE_LOG(linfo) << cook->getName() << " sent " << *pizza;
         } else {
             lock.unlock();
             std::this_thread::yield();
@@ -211,11 +211,9 @@ bool Kitchen::isActive(void) const {
 }
 
 bool Kitchen::canAddPizzas(const size_t nbPizzas) {
-    std::lock_guard<std::mutex> lock(_queueMutex);
-    size_t slots = getNbAvailableCooks()
-                    + this->_settings.nbCooks - _pizzaQueue.size();
-
-    return nbPizzas <= slots;
+    return (
+        this->getNbPizzasProcessed() + nbPizzas
+        <= 2 * this->_settings.nbCooks);
 }
 
 bool Kitchen::canMakePizza(const std::shared_ptr<Pizza> pizza) {
@@ -239,13 +237,17 @@ const std::vector<std::shared_ptr<Cook>> Kitchen::getCooks(void) const {
     return cooks;
 }
 
-size_t Kitchen::getNbAvailableCooks(void) const {
-    size_t nbAvailableCooks = 0;
+size_t Kitchen::getNbPizzasProcessed(void)  {
+    size_t processed = 0;
 
-    for (auto &pair : _cooks)
-        if (!pair.first->isWorking())
-            nbAvailableCooks++;
-    return nbAvailableCooks;
+    for (const auto &pair : _cooks)
+        if (pair.first->isWorking())
+            processed++;
+    {
+        std::lock_guard<std::mutex> lock(_queueMutex);
+        processed += _pizzaQueue.size();
+    }
+    return processed;
 }
 
 void Kitchen::setSettings(const KitchenSettings &settings) {
