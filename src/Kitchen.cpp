@@ -264,17 +264,23 @@ std::ostream &operator<<(std::ostream &out, const plz::Kitchen &kitchen) {
     auto cooks = kitchen.getCooks();
     auto queue = kitchen.getQueue();
 
-    out << "Queue:" << std::endl;
-    while (!queue.empty()) {
-        out << "[" << *queue.front() << "] -> ";
-        queue.pop();
+    if (queue.empty()) {
+        out << "    Queue: Empty" << std::endl;
+    } else {
+        out << "    Queue:" << std::endl << "    ";
+        while (!queue.empty()) {
+            out << "[" << *queue.front() << "] -> ";
+            queue.pop();
+        }
+        out << "[]" << std::endl;
     }
-    out << "[]" << std::endl;
-    out << "Cooks:" << std::endl;
+    out << "    Cooks:" << std::endl;
     for (const auto &cook : cooks)
-        out << " - " << *cook << std::endl;
-    out << "Stock:" << std::endl;
-    for (const auto & [ name, remaining ] : stock)
-        out << " - " << std::setw(11) << name << ": " << remaining << std::endl;
+        out << "     - " << *cook << std::endl;
+    out << "    Stock:" << std::endl;
+    for (const auto & [ name, remaining ] : stock) {
+        out << "     - " << std::setw(11)
+            << name << ": " << remaining << std::endl;
+    }
     return out;
 }
