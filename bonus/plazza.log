@@ -1,0 +1,68 @@
+23:46:52.683 INFO: Restaurant is open.
+23:46:52.683 INFO: Kitchen settings:
+Cooking multiplier = 1
+Number of cooks = 4
+Restocking time = 2000ms
+Inactive time = 5000ms
+Starting number of ingredients = 5
+Restocking number = 1
+23:46:54.399 INFO: Restaurant is closed.
+23:46:57.545 INFO: Restaurant is open.
+23:46:57.545 INFO: Kitchen settings:
+Cooking multiplier = 9
+Number of cooks = 2
+Restocking time = 2000ms
+Inactive time = 5000ms
+Starting number of ingredients = 5
+Restocking number = 1
+23:46:59.600 INFO: Received command : [Fantasia XL x9]
+23:46:59.650 INFO: Kitchen 31965 opened.
+23:46:59.650 INFO: Francois Hollande is handling Fantasia XL 001
+23:46:59.751 INFO: Order [Fantasia XL 001] sent to kitchen 31965
+23:46:59.751 INFO: Jackie Chan is handling Fantasia XL 002
+23:46:59.851 INFO: Order [Fantasia XL 002] sent to kitchen 31965
+23:46:59.951 INFO: Order [Fantasia XL 003] sent to kitchen 31965
+23:47:00.052 INFO: Order [Fantasia XL 004] sent to kitchen 31965
+23:47:00.202 INFO: Kitchen 31968 opened.
+23:47:00.203 INFO: Tonio Trussardi is handling Fantasia XL 005
+23:47:00.303 INFO: Order [Fantasia XL 005] sent to kitchen 31968
+23:47:00.403 INFO: Philippe Etchebest is handling Fantasia XL 006
+23:47:00.503 INFO: Order [Fantasia XL 006] sent to kitchen 31968
+23:47:00.704 INFO: Order [Fantasia XL 007] sent to kitchen 31968
+23:47:00.904 INFO: Order [Fantasia XL 008] sent to kitchen 31968
+23:47:01.155 INFO: Kitchen 31971 opened.
+23:47:01.158 INFO: Johnny Sins is handling Fantasia XL 009
+23:47:01.255 INFO: Order [Fantasia XL 009] sent to kitchen 31971
+23:47:35.651 INFO: Francois Hollande finished making Fantasia XL 001
+23:47:35.651 INFO: Francois Hollande sent Fantasia XL 001
+23:47:35.661 INFO: Francois Hollande is handling Fantasia XL 003
+23:47:35.751 INFO: Jackie Chan finished making Fantasia XL 002
+23:47:35.751 INFO: Jackie Chan sent Fantasia XL 002
+23:47:35.761 INFO: Jackie Chan is handling Fantasia XL 004
+23:47:36.203 INFO: Tonio Trussardi finished making Fantasia XL 005
+23:47:36.203 INFO: Tonio Trussardi sent Fantasia XL 005
+23:47:36.213 INFO: Tonio Trussardi is handling Fantasia XL 007
+23:47:36.403 INFO: Philippe Etchebest finished making Fantasia XL 006
+23:47:36.404 INFO: Philippe Etchebest sent Fantasia XL 006
+23:47:36.414 INFO: Philippe Etchebest is handling Fantasia XL 008
+23:47:37.159 INFO: Johnny Sins finished making Fantasia XL 009
+23:47:37.159 INFO: Johnny Sins sent Fantasia XL 009
+23:47:42.160 INFO: Kitchen 31971 closed.
+23:47:51.396 INFO: Fantasia XL 001 delivered.
+23:47:51.473 INFO: Fantasia XL 002 delivered.
+23:47:51.547 INFO: Fantasia XL 005 delivered.
+23:47:51.616 INFO: Fantasia XL 006 delivered.
+23:48:11.661 INFO: Francois Hollande finished making Fantasia XL 003
+23:48:11.661 INFO: Francois Hollande sent Fantasia XL 003
+23:48:11.733 INFO: Fantasia XL 003 delivered.
+23:48:11.761 INFO: Jackie Chan finished making Fantasia XL 004
+23:48:11.761 INFO: Jackie Chan sent Fantasia XL 004
+23:48:12.158 INFO: Fantasia XL 004 delivered.
+23:48:12.213 INFO: Tonio Trussardi finished making Fantasia XL 007
+23:48:12.214 INFO: Tonio Trussardi sent Fantasia XL 007
+23:48:12.415 INFO: Philippe Etchebest finished making Fantasia XL 008
+23:48:12.415 INFO: Philippe Etchebest sent Fantasia XL 008
+23:48:12.742 INFO: Fantasia XL 007 delivered.
+23:48:13.277 INFO: Fantasia XL 008 delivered.
+23:48:16.763 INFO: Kitchen 31965 closed.
+23:48:17.416 INFO: Kitchen 31968 closed.
