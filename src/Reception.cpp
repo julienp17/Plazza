@@ -52,8 +52,11 @@ void Reception::run(void) {
     std::cout << "Welcome to Plazza! The Pizzeria for everyone!" << std::endl;
     while (isOpen) {
         std::cout << "Place your order here: ";
-        getline(std::cin, commands);
-        this->doCommands(commands);
+        if (getline(std::cin, commands)) {
+            this->doCommands(commands);
+        } else {
+            isOpen = false;
+        }
     }
     std::cout << "Closing the restaurant, please wait..." << std::endl;
     for (auto &[pid, msgQueue] : this->_msgQueues) {
