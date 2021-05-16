@@ -23,18 +23,20 @@ class Reception {
     //* Construct a new Reception object
     Reception(void);
 
-    /**
-     * @brief Destroy the Reception object
-     *
-     * Waits for every kitchen process to finish
-     */
+    //* Destroy the Reception object
     virtual ~Reception(void);
 
     //* Main loop of the reception
     void run(void);
 
+    //* Wait for every kitchen process to finish
+    void close(void);
+
     //* Print the status of each kitchen
     void printStatus(void);
+
+    //* Print the list of all commands
+    void printHelp(void);
 
     /**
      * @brief Adds a pizza to the queue

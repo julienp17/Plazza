@@ -50,8 +50,9 @@ void Reception::run(void) {
     FILE_LOG(linfo) << "Restaurant is open.";
     FILE_LOG(linfo) << _kitchenSettings;
     std::cout << "Welcome to Plazza! The Pizzeria for everyone!" << std::endl;
+    std::cout << "Type 'help' for the list of all commands." << std::endl;
     while (isOpen) {
-        std::cout << "Place your order here: ";
+        std::cout << "Place your command here: ";
         if (getline(std::cin, commands)) {
             this->doCommands(commands);
         } else {
@@ -59,11 +60,15 @@ void Reception::run(void) {
         }
     }
     std::cout << "Closing the restaurant, please wait..." << std::endl;
+    this->close();
+    FILE_LOG(linfo) << "Restaurant is closed.";
+}
+
+void Reception::close(void) {
     for (auto &[pid, msgQueue] : this->_msgQueues) {
         waitpid(pid, NULL, 0);
         msgQueue->close();
     }
-    FILE_LOG(linfo) << "Restaurant is closed.";
 }
 
 void Reception::doCommands(const std::string &commands_str) {
@@ -75,13 +80,24 @@ void Reception::doCommands(const std::string &commands_str) {
         FILE_LOG(linfo) << "Received command : [" << command << "]";
         this->handleReceived();
         this->handleDisconnections();
-        if (strcasecmp(command.c_str(), "status") == 0)
+        if (strcasecmp(command.c_str(), "help") == 0) {
+            this->printHelp();
+        } else if (strcasecmp(command.c_str(), "status") == 0) {
             this->printStatus();
-        else if (strcasecmp(command.c_str(), "exit") == 0)
+        } else if (strcasecmp(command.c_str(), "exit") == 0) {
             isOpen = false;
-        else
+        } else {
             this->placeOrder(command);
+        }
     }
+}
+
+void Reception::printHelp(void) {
+    std::cout << "List of reception commands:" << std::endl
+        << "  -   help: prints all commands of the reception" << std::endl
+        << "  - status: prints the status of all running kitchens" << std::endl
+        << "  -   exit: exits the reception" << std::endl
+        << "Every other input is considered as a pizza order." << std::endl;
 }
 
 void Reception::printStatus(void) {
