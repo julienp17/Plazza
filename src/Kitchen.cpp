@@ -175,7 +175,7 @@ void Kitchen::handleReceived(void) {
 
 void Kitchen::respondOrder(const std::string &message) {
     std::vector<std::string> tokens = split(message, ' ');
-    auto pizza = std::make_shared<Pizza>(tokens[0], tokens[1]);
+    auto pizza = std::make_shared<Pizza>(tokens[0], tokens[1], tokens[2]);
 
     if (this->canAddPizzas(1)) {
         _msgQueue->send(ORDER, "Accepted");

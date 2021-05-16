@@ -5,6 +5,7 @@
 ** Pizza
 */
 
+#include <iomanip>
 #include <string.h>
 #include <unordered_map>
 #include "Pizza.hpp"
@@ -61,16 +62,20 @@ static std::unordered_map<plz::PizzaType, std::vector<std::string>>
 
 namespace plz {
 /* ----------------------- Constructors / Destructors ----------------------- */
-Pizza::Pizza(const std::string &type, const std::string &size) {
+Pizza::Pizza(const std::string &type, const std::string &size,
+        const std::string &id) {
     this->type = getPizzaType(type);
     this->size = getPizzaSize(size);
+    this->id = id;
     this->timeToBake = getPizzaBakeTime(this->type);
     this->ingredients = getPizzaIngredients(this->type);
 }
 
-Pizza::Pizza(const PizzaType type, const PizzaSize size) {
+Pizza::Pizza(const PizzaType type, const PizzaSize size,
+        const std::string &id) {
     this->type = type;
     this->size = size;
+    this->id = id;
     this->timeToBake = getPizzaBakeTime(type);
     this->ingredients = getPizzaIngredients(this->type);
 }
@@ -148,5 +153,9 @@ std::ostream &operator<<(std::ostream &out, const plz::PizzaSize size) {
 }
 
 std::ostream &operator<<(std::ostream &out, const plz::Pizza &pizza) {
-    return out << pizza.type << " " << pizza.size;
+    out << pizza.type << " " << pizza.size;
+    if (!pizza.id.empty()) {
+        out << " " << pizza.id;
+    }
+    return out;
 }

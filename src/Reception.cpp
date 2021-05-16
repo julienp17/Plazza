@@ -6,6 +6,7 @@
 */
 
 #include <iostream>
+#include <iomanip>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
@@ -35,6 +36,7 @@ namespace plz {
 
 Reception::Reception(void) {
     initLogger("./plazza.log", ldebug);
+    this->_orderID = 1;
 }
 
 Reception::~Reception(void) {
@@ -110,17 +112,24 @@ void Reception::printStatus(void) {
         std::cout << "No kitchen running at the moment." << std::endl;
 }
 
-bool Reception::placeOrder(const std::string &order) {
+bool Reception::placeOrder(const std::string &orderFmt) {
     size_t nbPizzas = 0;
-    VecStr_t tokens = split(order, ' ');
+    VecStr_t tokens = split(orderFmt, ' ');
+    std::stringstream order;
 
     if (!this->orderIsCorrect(tokens)) {
         std::cout << "Invalid order." << std::endl;
         return false;
     }
     nbPizzas = getNumber<size_t>(tokens[2].substr(1));
-    for (size_t i = 0 ; i < nbPizzas ; i++)
-        this->delegateOrder(tokens[0] + " " + tokens[1]);
+    for (size_t i = 0 ; i < nbPizzas ; i++) {
+        order.str("");
+        order.clear();
+        order << tokens[0] << " " << tokens[1] << " "
+            << std::setfill('0') << std::setw(3) << this->_orderID;
+        this->_orderID++;
+        this->delegateOrder(order.str());
+    }
     return true;
 }
 

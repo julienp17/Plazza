@@ -111,6 +111,9 @@ class Reception {
 
     //* Mapping of kitchen PIDs to their message queue
     std::map<pid_t, std::shared_ptr<MessageQueue>> _msgQueues;
+
+    // Current ID of the order
+    size_t _orderID;
 };
 }  // namespace plz
 
